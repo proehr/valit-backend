@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: local
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/study_feedback
+    username: postgres
+    password: postgres
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
