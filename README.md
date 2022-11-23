@@ -3,7 +3,7 @@
 
 ## Database
 
-This backend project requires a postgres server with an already existing database
+This backend project requires a postgres server running on port 5432 with an already existing database
 * Name: study_feedback
 * Username: postgres
 * Password: postgres
