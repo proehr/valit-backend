@@ -5,8 +5,12 @@ spring:
     database: POSTGRESQL
     show-sql: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/study_feedback
+    url: jdbc:postgresql://localhost:5432/study_feedback?stringtype=unspecified
     username: postgres
     password: postgres
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
+valit:
+  app:
+    jwtSecret: g4PtQBzI5tN0c8bpD2xu
+    jwtExpirationMs: 86400000
