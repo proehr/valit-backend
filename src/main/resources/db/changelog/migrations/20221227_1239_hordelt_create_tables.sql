@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset liquibase:20221221_0929_hordelt_.sql
+-- changeset liquibase:20221227_1239_hordelt_create_tables
 create sequence evaluation_course_id_seq;
 
 alter sequence evaluation_course_id_seq owner to postgres;
@@ -20,7 +20,10 @@ create table lecturer
     title       text,
     lecturer_id bigserial
         constraint lecturer_pk
-            primary key
+            primary key,
+    account     bigint
+        constraint lecturer_account_account_id_fk
+            references account
 );
 
 alter table lecturer
@@ -69,7 +72,8 @@ create table question
             primary key,
     evaluation  bigint
         constraint question_evaluation_evaluation_id_fk
-            references evaluation
+            references evaluation,
+    value       text
 );
 
 alter table question
