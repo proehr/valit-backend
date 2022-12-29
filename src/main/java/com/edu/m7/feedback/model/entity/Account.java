@@ -21,8 +21,9 @@ import java.sql.Timestamp;
 @Getter
 public class Account {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "accountId")
     private Long accountId;
 
     @Email
