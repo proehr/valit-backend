@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
-import javax.validation.constraints.Email;
 import java.sql.Timestamp;
 
 @Entity
@@ -25,8 +24,6 @@ public class Account {
     @Id
     private Long accountId;
 
-    @Email
-    @Column(name = "email")
     @Setter
     private String username;
 
