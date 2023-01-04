@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public enum AccountType {
 
-    LECTURER("read-self-lectures"),
-    ADMIN("read-all"),
-    STUDENT("read-self-feedback");
+    LECTURER("LECTURER"),
+    ADMIN("ADMIN"),
+    STUDENT("STUDENT");
 
     @Getter
     private final Set<GrantedAuthority> grantedAuthorities;

@@ -3,7 +3,6 @@ package com.edu.m7.feedback.security;
 import com.edu.m7.feedback.model.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
