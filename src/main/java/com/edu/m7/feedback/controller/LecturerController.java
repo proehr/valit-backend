@@ -15,8 +15,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class LecturerController {
-
     private final LecturerRepository repository;
+
     private final AccountRepository accountRepository;
 
     public LecturerController(LecturerRepository repository, AccountRepository accountRepository) {
@@ -29,15 +29,13 @@ public class LecturerController {
         return optionalEntity.orElseThrow();
     }
 
-
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    @ResponseBody
-    Lecturer getLecturer(Principal principal) {
+    @GetMapping(value = "/profile")
+    ResponseEntity<Lecturer> getLecturer(Principal principal) {
         String username = principal.getName();
         Optional<Account> optionalEntity = accountRepository.findByUsername(username);
         Account account  = optionalEntity.orElseThrow();
-        return repository.findByAccount(account).orElseThrow();
+        return ResponseEntity.ok(repository.findByAccount(account).orElseThrow());
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -56,6 +54,5 @@ public class LecturerController {
             repository.save(newLecturer);
             return ResponseEntity.ok(new MessageResponse("Profile created successfully!"));
         }
-
     }
 }
