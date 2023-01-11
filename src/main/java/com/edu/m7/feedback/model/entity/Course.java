@@ -34,6 +34,9 @@ public class Course {
     @Column(name = "dates", columnDefinition = "date[](13)")
     private LocalDate[] dates;
 
+    @Column(name = "student_count")
+    private Integer studentCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecturer_fk")
     private Lecturer lecturer;
