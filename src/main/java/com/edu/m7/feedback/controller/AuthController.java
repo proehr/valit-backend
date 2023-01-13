@@ -5,8 +5,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.edu.m7.feedback.model.AccountType;
 import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.payload.request.LoginRequest;
+import com.edu.m7.feedback.payload.request.RegistrationRequest;
 import com.edu.m7.feedback.payload.request.SignupRequest;
 import com.edu.m7.feedback.payload.response.JwtResponse;
 import com.edu.m7.feedback.payload.response.MessageResponse;
@@ -88,5 +91,22 @@ public class AuthController {
     @GetMapping("/userExists")
     public ResponseEntity<Boolean> userExists(@RequestBody String username) {
         return ResponseEntity.ok(accountService.userExists(username));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<JwtResponse> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
+        SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
+        registerUser(signupRequest);
+
+        LoginRequest loginRequest = new LoginRequest(registrationRequest.getUsername(), registrationRequest.getPassword());
+        ResponseEntity<JwtResponse> loginResponse = authenticateUser(loginRequest);
+
+        Lecturer lecturer = new Lecturer();
+        lecturer.setTitle(registrationRequest.getTitle());
+        lecturer.setFirstName(registrationRequest.getFirstName());
+        lecturer.setLastName(registrationRequest.getLastName());
+
+        accountService.createLecturer(registrationRequest.getUsername(),lecturer);
+        return loginResponse;
     }
 }
