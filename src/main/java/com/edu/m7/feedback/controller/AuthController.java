@@ -94,12 +94,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
         SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
         ResponseEntity<MessageResponse> signupResponse = registerUser(signupRequest);
 
         if (signupResponse.getStatusCodeValue() != 200) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
 
         LoginRequest loginRequest = new LoginRequest(registrationRequest.getUsername(), registrationRequest.getPassword());
