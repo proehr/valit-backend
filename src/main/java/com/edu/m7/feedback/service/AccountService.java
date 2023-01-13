@@ -20,7 +20,7 @@ public class AccountService implements UserDetailsManager {
 
     private final AccountRepository repository;
     private final LecturerRepository lecturerRepository;
-    
+
     public AccountService(AccountRepository repository, LecturerRepository lecturerRepository) {
         this.repository = repository;
         this.lecturerRepository = lecturerRepository;
