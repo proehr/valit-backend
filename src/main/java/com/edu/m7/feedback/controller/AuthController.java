@@ -96,7 +96,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
         SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
-        registerUser(signupRequest);
+        ResponseEntity<MessageResponse> signupResponse = registerUser(signupRequest);
+
+        if (signupResponse.getStatusCodeValue() != 200) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
         LoginRequest loginRequest = new LoginRequest(registrationRequest.getUsername(), registrationRequest.getPassword());
         ResponseEntity<JwtResponse> loginResponse = authenticateUser(loginRequest);
