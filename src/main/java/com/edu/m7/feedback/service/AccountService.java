@@ -1,8 +1,10 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.mapping.FeedbackUserDetailsMapper;
 import com.edu.m7.feedback.model.repository.AccountRepository;
+import com.edu.m7.feedback.model.repository.LecturerRepository;
 import com.edu.m7.feedback.security.FeedbackUserDetails;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +19,11 @@ import javax.validation.Valid;
 public class AccountService implements UserDetailsManager {
 
     private final AccountRepository repository;
-
-    public AccountService(AccountRepository repository) {
+    private final LecturerRepository lecturerRepository;
+    
+    public AccountService(AccountRepository repository, LecturerRepository lecturerRepository) {
         this.repository = repository;
+        this.lecturerRepository = lecturerRepository;
     }
 
     @Override
@@ -81,5 +85,13 @@ public class AccountService implements UserDetailsManager {
     @Override
     public boolean userExists(String username) {
         return repository.findByUsername(username).isPresent();
+    }
+
+    public void createLecturer(String username, Lecturer lecturer) {
+        Account account = repository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + username));
+        lecturer.setAccount(account);
+        lecturerRepository.save(lecturer);
     }
 }
