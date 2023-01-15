@@ -1,8 +1,9 @@
 package com.edu.m7.feedback.model.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,12 +33,12 @@ public class Course {
     private LocalTime timeEnd;
 
     @Column(name = "dates", columnDefinition = "date[](13)")
-    private LocalDate[] dates;
+    private String dates;
 
     @Column(name = "student_count")
     private Integer studentCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lecturer_fk")
     private Lecturer lecturer;
     @OneToMany(mappedBy = "course")
