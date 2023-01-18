@@ -16,8 +16,9 @@ valit:
 ---
 
 spring:
-  profiles:
-    active: local
+  config:
+    activate:
+      on-profile: local
   datasource:
     url: jdbc:postgresql://localhost:5432/study_feedback?stringtype=unspecified
     username: postgres
