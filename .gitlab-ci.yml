@@ -5,6 +5,7 @@ variables:
 stages:
     - test
     - build
+    - deploy
 
 test:
     stage: test
@@ -13,6 +14,12 @@ test:
 build:
     stage: build
     script: "mvn clean install"
-    only:
-        - main
+    #only:
+        #- main
+
+deploy:
+    stage: deploy
+    script: "mv target/valit-backend.jar /db/valit-backend/feedback-backend/target"
+    #only:
+        #- main
     
