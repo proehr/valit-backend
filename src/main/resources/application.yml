@@ -1,15 +1,27 @@
 spring:
-  profiles:
-    active: local
   jpa:
     database: POSTGRESQL
     show-sql: true
   datasource:
+    url: jdbc:postgresql://localhost:5432/valit_db?stringtype=unspecified
+    username: valit
+    password: ${VALIT_DB_LOGIN}
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+valit:
+  app:
+    jwtSecret: ${VALIT_JWT_SECRET}
+    jwtExpirationMs: 86400000
+
+---
+
+spring:
+  profiles:
+    active: local
+  datasource:
     url: jdbc:postgresql://localhost:5432/study_feedback?stringtype=unspecified
     username: postgres
     password: postgres
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-master.xml
 valit:
   app:
     jwtSecret: g4PtQBzI5tN0c8bpD2xu
