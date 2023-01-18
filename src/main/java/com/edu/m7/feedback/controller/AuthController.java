@@ -16,6 +16,7 @@ import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.security.FeedbackUserDetails;
 import com.edu.m7.feedback.security.jwt.JwtUtils;
 import com.edu.m7.feedback.service.AccountService;
+import com.edu.m7.feedback.service.LecturerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +39,8 @@ public class AuthController {
 
     private final AccountService accountService;
 
+    private final LecturerService lecturerService;
+
     private final PasswordEncoder encoder;
 
     private final JwtUtils jwtUtils;
@@ -45,10 +48,12 @@ public class AuthController {
     public AuthController(
             AuthenticationManager authenticationManager,
             AccountService accountService,
+            LecturerService lecturerService,
             PasswordEncoder encoder,
             JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.accountService = accountService;
+        this.lecturerService = lecturerService;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
@@ -93,24 +98,16 @@ public class AuthController {
         return ResponseEntity.ok(accountService.userExists(username));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
+    @PostMapping("/full-register")
+    public ResponseEntity<Lecturer> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
         SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
         ResponseEntity<MessageResponse> signupResponse = registerUser(signupRequest);
 
         if (signupResponse.getStatusCodeValue() != 200) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseEntity.badRequest().body(null);
         }
 
-        LoginRequest loginRequest = new LoginRequest(registrationRequest.getUsername(), registrationRequest.getPassword());
-        ResponseEntity<JwtResponse> loginResponse = authenticateUser(loginRequest);
-
-        Lecturer lecturer = new Lecturer();
-        lecturer.setTitle(registrationRequest.getTitle());
-        lecturer.setFirstName(registrationRequest.getFirstName());
-        lecturer.setLastName(registrationRequest.getLastName());
-
-        accountService.createLecturer(registrationRequest.getUsername(),lecturer);
-        return loginResponse;
+        Lecturer lecturer = lecturerService.createLecturer(registrationRequest.getUsername(),registrationRequest);
+        return ResponseEntity.ok(lecturer);
     }
 }
