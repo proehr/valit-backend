@@ -17,7 +17,7 @@ deploy:
     - mvn clean install
     - mkdir -p build
     - mv target/valit-backend.jar build/valit-backend.jar
-    - systemctl restart valit-backend.service
+    - sudo /bin/systemctl restart valit-backend.service
     #only:
         #- main
 
