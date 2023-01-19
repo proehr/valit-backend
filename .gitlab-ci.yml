@@ -13,8 +13,10 @@ test:
 deploy:
   stage: deploy
   script:
+    - export VALIT_DB_LOGIN=$VALIT_DB_LOGIN
     - mvn clean install
-    - sudo mv target/valit-backend.jar /db/valit-backend/feedback-backend/target/valit-backend.jar
+    - chmod 755 target/valit-backend.jar
+    - mv target/valit-backend.jar /db/valit-backend/feedback-backend/target/valit-backend.jar
     - systemctl restart valit-backend.service
     #only:
         #- main
