@@ -3,23 +3,19 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 stages:
-    - test
-    - build
-    - deploy
+  - test
+  - deploy
 
 test:
-    stage: test
-    script: "mvn test"
-
-build:
-    stage: build
-    script: "mvn clean install"
-    #only:
-        #- main
+  stage: test
+  script: "mvn test"
 
 deploy:
-    stage: deploy
-    script: "mv target/valit-backend.jar /db/valit-backend/feedback-backend/target"
+  stage: deploy
+  script:
+    - mvn clean install
+    - mv target/valit-backend.jar /db/valit-backend/feedback-backend/target/valit-backend.jar
+    - systemctl restart valit-backend.service
     #only:
         #- main
-    
+
