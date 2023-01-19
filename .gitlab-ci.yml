@@ -18,6 +18,6 @@ deploy:
     - mkdir -p build
     - mv target/valit-backend.jar build/valit-backend.jar
     - sudo /bin/systemctl restart valit-backend.service
-    #only:
-        #- main
+  only:
+    - main
 
