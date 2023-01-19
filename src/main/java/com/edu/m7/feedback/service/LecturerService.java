@@ -8,6 +8,8 @@ import com.edu.m7.feedback.payload.request.RegistrationRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class LecturerService {
 
@@ -19,10 +21,19 @@ public class LecturerService {
         this.accountRepository = accountRepository;
     }
 
-    public Lecturer createLecturer(String username, RegistrationRequest registrationRequest) {
+    public Lecturer getLecturerByUsername(String username) {
         Account account = accountRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + username));
+
+        Optional<Lecturer> optionalEntity = repository.findByAccount(account);
+        return optionalEntity.orElseThrow();
+    }
+
+    public Lecturer createLecturer(RegistrationRequest registrationRequest) {
+        Account account = accountRepository
+                .findByUsername(registrationRequest.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + registrationRequest.getUsername()));
 
         Lecturer lecturer = new Lecturer();
         lecturer.setTitle(registrationRequest.getTitle());
