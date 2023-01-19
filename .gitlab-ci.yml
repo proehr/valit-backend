@@ -14,10 +14,11 @@ deploy:
   stage: deploy
   script:
     - export VALIT_DB_LOGIN=$VALIT_DB_LOGIN
+    - export VALIT_JWT_SECRET=$VALIT_JWT_SECRET
     - mvn clean install
     - mkdir -p build
     - mv target/valit-backend.jar build/valit-backend.jar
     - sudo /bin/systemctl restart valit-backend.service
-  only:
-    - main
+  #only:
+    #- main
 
