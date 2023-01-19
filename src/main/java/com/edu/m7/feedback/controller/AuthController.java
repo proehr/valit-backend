@@ -1,8 +1,5 @@
 package com.edu.m7.feedback.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import com.edu.m7.feedback.model.AccountType;
@@ -21,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -67,14 +63,10 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        FeedbackUserDetails userDetails = (FeedbackUserDetails) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
+       FeedbackUserDetails userDetails = (FeedbackUserDetails) authentication.getPrincipal();
+       Lecturer lecturer = lecturerService.getLecturerByUsername(userDetails.getUsername());
         return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getUsername(),
-                roles));
+                userDetails.getUsername(), lecturer.getLecturerId(), lecturer.getTitle(), lecturer.getFirstName(), lecturer.getLastName()));
     }
 
     @PostMapping("/signup")
@@ -82,7 +74,7 @@ public class AuthController {
         if (accountService.userExists(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse("errorEmailTaken"));
         }
 
         // Create new user's account
@@ -99,15 +91,15 @@ public class AuthController {
     }
 
     @PostMapping("/full-register")
-    public ResponseEntity<Lecturer> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<MessageResponse> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
         SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
         ResponseEntity<MessageResponse> signupResponse = registerUser(signupRequest);
 
         if (signupResponse.getStatusCodeValue() != 200) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(new MessageResponse("errorEmailTaken"));
         }
 
-        Lecturer lecturer = lecturerService.createLecturer(registrationRequest.getUsername(),registrationRequest);
-        return ResponseEntity.ok(lecturer);
+        lecturerService.createLecturer(registrationRequest);
+        return ResponseEntity.ok(new MessageResponse("User registered and created lecturer successfully!"));
     }
 }
