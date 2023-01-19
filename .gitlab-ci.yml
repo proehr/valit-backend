@@ -14,7 +14,7 @@ deploy:
   stage: deploy
   script:
     - mvn clean install
-    - mv target/valit-backend.jar /db/valit-backend/feedback-backend/target/valit-backend.jar
+    - sudo mv target/valit-backend.jar /db/valit-backend/feedback-backend/target/valit-backend.jar
     - systemctl restart valit-backend.service
     #only:
         #- main
