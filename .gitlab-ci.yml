@@ -15,7 +15,8 @@ deploy:
   script:
     - export VALIT_DB_LOGIN=$VALIT_DB_LOGIN
     - mvn clean install
-    - mv target/valit-backend.jar /home/gitlab-runner/builds/valit-backend/valit-backend.jar
+    - mkdir -p build
+    - mv target/valit-backend.jar build/valit-backend.jar
     - systemctl restart valit-backend.service
     #only:
         #- main
