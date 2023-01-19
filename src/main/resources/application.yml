@@ -5,12 +5,12 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/valit_db?stringtype=unspecified
     username: valit
-    password: ${VALIT_DB_LOGIN}
+    password: valit2023!4tw
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
 valit:
   app:
-    jwtSecret: ${VALIT_JWT_SECRET}
+    jwtSecret: g4PtQBzI5tN0c8bpD2xu
     jwtExpirationMs: 86400000
 
 ---
@@ -23,7 +23,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/study_feedback?stringtype=unspecified
     username: postgres
     password: postgres
-valit:
-  app:
-    jwtSecret: g4PtQBzI5tN0c8bpD2xu
-    jwtExpirationMs: 86400000
