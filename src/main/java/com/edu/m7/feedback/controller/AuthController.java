@@ -54,7 +54,7 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/signin-as-lecturer")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -99,7 +99,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("errorEmailTaken"));
         }
 
-        lecturerService.createLecturer(registrationRequest);
+        lecturerService.createLecturer(registrationRequest.getUsername(), registrationRequest.getTitle(), registrationRequest.getFirstName(), registrationRequest.getLastName());
         return ResponseEntity.ok(new MessageResponse("User registered and created lecturer successfully!"));
     }
 }

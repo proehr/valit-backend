@@ -30,15 +30,15 @@ public class LecturerService {
         return optionalEntity.orElseThrow();
     }
 
-    public Lecturer createLecturer(RegistrationRequest registrationRequest) {
+    public Lecturer createLecturer(String username, String title, String firstName, String lastName) {
         Account account = accountRepository
-                .findByUsername(registrationRequest.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + registrationRequest.getUsername()));
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + username));
 
         Lecturer lecturer = new Lecturer();
-        lecturer.setTitle(registrationRequest.getTitle());
-        lecturer.setFirstName(registrationRequest.getFirstName());
-        lecturer.setLastName(registrationRequest.getLastName());
+        lecturer.setTitle(title);
+        lecturer.setFirstName(firstName);
+        lecturer.setLastName(lastName);
         lecturer.setAccount(account);
         repository.save(lecturer);
         return lecturer;
