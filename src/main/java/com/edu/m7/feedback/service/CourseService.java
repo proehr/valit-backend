@@ -17,9 +17,9 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
-    // will execute a SELECT statement, retrieving all the courses in the database
-    public List<Course> getAllCourses(){
-        return courseRepository.findAll();
+    // will execute a SELECT statement, retrieving all the courses associated with a specific foreign key( lecturer id)
+    public List<Course> getAllCourses(Long lecturerId){
+        return  courseRepository.findByLecturer(lecturerId);
     }
 
     //will execute INSERT statement, because course object id is 'null'
