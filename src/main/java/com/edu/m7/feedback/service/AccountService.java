@@ -19,11 +19,9 @@ import javax.validation.Valid;
 public class AccountService implements UserDetailsManager {
 
     private final AccountRepository repository;
-    private final LecturerRepository lecturerRepository;
 
-    public AccountService(AccountRepository repository, LecturerRepository lecturerRepository) {
+    public AccountService(AccountRepository repository) {
         this.repository = repository;
-        this.lecturerRepository = lecturerRepository;
     }
 
     @Override
