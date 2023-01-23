@@ -82,3 +82,21 @@ and style choices. If SonarLint is used, all shown issues should at least be rev
   setters or constructors.
 * Please re-format your code, run tests (if we add any) and check any TODOs you've added before you commit.
   IntelliJ can be configured to do this before you commit.
+
+## How-To: Code Review
+
+If you have no experience with code reviews at all, it might be helpful to take a look at some best practices
+and guidelines. Google has provided their code review practices in a lengthy, but very helpful guide: 
+[How to do a code review](https://google.github.io/eng-practices/review/reviewer/).
+
+Some short notes on what is most important to check in code reviews in this project:
+* **Functionality**: Our top priority should be to maintain a functional `main` branch. The test stage of this
+  projects pipeline can be used as an indicator for functionality, but be aware that not all code changes are covered 
+  by tests (especially config changes). If you are unsure, test the branch locally.
+* **Documentation**: If we modify/add to this projects API, the changes should be documented.
+* **Security**: This projects API is secured by Spring Security. It is important to make sure, that all our endpoints
+  can only be accessed by the intended users.
+* **Design, Style & Naming**: Though we may not have enough time to write the cleanest code we can, it is always a good 
+  idea to bring up any design/style/naming flaws. We can all learn from each other, and that's what code reviews are 
+  for. Our goal should be to write the cleanest code we can in the given timeline. Code Reviews are time intensive, 
+  so don't go overboard in this project. In doubt, Reviewer and Code Author can always discuss where to take shortcuts.

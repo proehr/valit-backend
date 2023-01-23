@@ -1,8 +1,10 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.mapping.FeedbackUserDetailsMapper;
 import com.edu.m7.feedback.model.repository.AccountRepository;
+import com.edu.m7.feedback.model.repository.LecturerRepository;
 import com.edu.m7.feedback.security.FeedbackUserDetails;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.userdetails.UserDetails;
