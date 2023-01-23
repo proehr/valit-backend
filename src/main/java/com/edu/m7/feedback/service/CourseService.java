@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.service;
 import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ public class CourseService {
     }
 
     // will execute a SELECT statement, retrieving all the courses associated with a specific foreign key( lecturer id)
-    public List<Course> getAllCourses(Long lecturerId){
-        return  courseRepository.findByLecturer(lecturerId);
+    public List<Course> getAllCourses(Lecturer lecturer){
+        return  courseRepository.findByLecturer(lecturer);
     }
 
     //will execute INSERT statement, because course object id is 'null'
@@ -28,8 +29,7 @@ public class CourseService {
     }
 
     //will execute an UPDATE statement, because course object is not 'null'
-    public Course updateCourse(Long id, Course course) {
-        course.setId(id);
+    public Course updateCourse(Course course) {
         return courseRepository.save(course);
     }
 
