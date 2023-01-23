@@ -39,6 +39,7 @@ public class CourseController {
 
     // return all the courses
     @GetMapping
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
     public ResponseEntity<List<Course>> getAllCourses(Principal principal) {
 
         //get username of signed in account
