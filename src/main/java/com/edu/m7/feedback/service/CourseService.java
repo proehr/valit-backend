@@ -1,4 +1,5 @@
 package com.edu.m7.feedback.service;
+import com.edu.m7.feedback.model.dto.CourseDto;
 import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.CourseRepository;
@@ -18,29 +19,46 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
-    // will execute a SELECT statement, retrieving all the courses associated with a specific foreign key( lecturer id)
-    public List<Course> getAllCourses(Lecturer lecturer){
-        return  courseRepository.findByLecturer(lecturer);
+    public List<CourseDto> getAllCourses(Lecturer lecturer){
+        Optional<List<Course>> optionalCourse = this.courseRepository.findByLecturer(lecturer);
+        if(optionalCourse.isPresent())
+            return CourseDto.toDto(optionalCourse.get());
+        else
+            return null;
     }
 
-    //will execute INSERT statement, because course object id is 'null'
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
+    public CourseDto createCourse(CourseDto course) {
+        return CourseDto.toDto(courseRepository.save(Course.toEntity(course)));
     }
 
-    //will execute an UPDATE statement, because course object is not 'null'
-    public Course updateCourse(Course course) {
-        return courseRepository.save(course);
+    public CourseDto updateCourse(Long id, Course newCourse){
+
+        Course course = courseRepository.findById(id).orElseThrow();
+
+        // We update everything but the id and the lecturer
+        course.setName(newCourse.getName());
+        course.setDegree(newCourse.getDegree());
+        course.setStudentCount(newCourse.getStudentCount());
+        course.setTimeStart(newCourse.getTimeStart());
+        course.setTimeEnd(newCourse.getTimeEnd());
+        course.setDates(newCourse.getDates());
+        course.setStudentCount(newCourse.getStudentCount());
+        course.setEvaluations(newCourse.getEvaluations());
+
+        return CourseDto.toDto(course);
     }
 
-    // will execute a DELETE statement, targeting the specified id
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
 
-    public Course getCourseById(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        return course.orElse(null);
+    public CourseDto getCourseById(Long id) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if(optionalCourse.isPresent())
+            return CourseDto.toDto(optionalCourse.get());
+        else
+            return null;
     }
 
 }
