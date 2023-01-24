@@ -74,3 +74,9 @@ alter table string_answer
 alter table string_answer
     add constraint string_answer_answer_answer_id_fk
         foreign key (answer_fk) references answer (answer_id);
+
+alter table course
+drop column dates;
+
+alter table evaluation
+drop column date;
