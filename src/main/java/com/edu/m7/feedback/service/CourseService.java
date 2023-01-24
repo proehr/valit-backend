@@ -1,51 +1,47 @@
 package com.edu.m7.feedback.service;
+
 import com.edu.m7.feedback.model.dto.CourseDto;
 import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.model.entity.Lecturer;
+import com.edu.m7.feedback.model.mapping.CourseDtoMapper;
 import com.edu.m7.feedback.model.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
-    @Autowired
-    CourseRepository courseRepository;
+
+    private static final CourseDtoMapper mapper = Mappers.getMapper(CourseDtoMapper.class);
+    private final CourseRepository courseRepository;
 
     public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
-    public List<CourseDto> getAllCourses(Lecturer lecturer){
-        Optional<List<Course>> optionalCourse = this.courseRepository.findByLecturer(lecturer);
-        if(optionalCourse.isPresent())
-            return CourseDto.toDto(optionalCourse.get());
-        else
-            return null;
+    public List<CourseDto> getAllCourses(Lecturer lecturer) {
+        return courseRepository
+                .findByLecturer(lecturer)
+                .stream()
+                .map(mapper::entityToDto)
+                .collect(Collectors.toList());
     }
 
-    public CourseDto createCourse(CourseDto course) {
-        return CourseDto.toDto(courseRepository.save(Course.toEntity(course)));
+    public CourseDto createCourse(CourseDto courseDto, Lecturer lecturer) {
+        Course course = mapper.dtoToEntity(courseDto);
+        course.setLecturer(lecturer);
+        return mapper.entityToDto(courseRepository.save(course));
     }
 
-    public CourseDto updateCourse(Long id, Course newCourse){
+    public CourseDto updateCourse(Long id, CourseDto courseDto) {
 
         Course course = courseRepository.findById(id).orElseThrow();
+        course = mapper.updateEntityFromDto(courseDto, course);
 
-        // We update everything but the id and the lecturer
-        course.setName(newCourse.getName());
-        course.setDegree(newCourse.getDegree());
-        course.setStudentCount(newCourse.getStudentCount());
-        course.setTimeStart(newCourse.getTimeStart());
-        course.setTimeEnd(newCourse.getTimeEnd());
-        course.setDates(newCourse.getDates());
-        course.setStudentCount(newCourse.getStudentCount());
-        course.setEvaluations(newCourse.getEvaluations());
-
-        return CourseDto.toDto(course);
+        return mapper.entityToDto(courseRepository.save(course));
     }
 
     public void deleteCourse(Long id) {
@@ -54,11 +50,11 @@ public class CourseService {
 
     public CourseDto getCourseById(Long id) {
         Optional<Course> optionalCourse = courseRepository.findById(id);
-
-        if(optionalCourse.isPresent())
-            return CourseDto.toDto(optionalCourse.get());
-        else
-            return null;
+        return optionalCourse.map(mapper::entityToDto).orElse(null);
     }
 
+    public Long getLecturerByCourseId(Long id) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        return optionalCourse.map(course -> course.getLecturer().getLecturerId()).orElseThrow();
+    }
 }
