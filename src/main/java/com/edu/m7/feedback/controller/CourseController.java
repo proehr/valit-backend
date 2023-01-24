@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.dto.CourseDto;
 import com.edu.m7.feedback.model.entity.Account;
 import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -46,7 +48,7 @@ public class CourseController {
         Optional<Account> optionalEntity = accountRepository.findByUsername(username);
 
         // return the logged in account Entity
-        Account account  = optionalEntity.orElseThrow();
+        Account account = optionalEntity.orElseThrow();
 
         // look for the lecturer associated with the account
         Optional<Lecturer> optionalLecturer = lecturerRepository.findByAccount(account);
@@ -60,31 +62,28 @@ public class CourseController {
     // retrieve all the courses of the currently logged in Lecturer
     @GetMapping
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    public ResponseEntity<List<Course>> getAllCourses(Principal principal) {
+    public ResponseEntity<List<CourseDto>> getAllCourses(Principal principal) {
 
         Lecturer lecturer = getLecturer(principal);
 
-        List<Course> courses = courseService.getAllCourses(lecturer);
+        List<CourseDto> coursesDto = courseService.getAllCourses(lecturer);
 
-        if (courses != null && !courses.isEmpty()) {
-            return new ResponseEntity<>(courses, HttpStatus.OK);
-        } else {
+        if (coursesDto != null)
+            return new ResponseEntity<>(coursesDto, HttpStatus.OK);
+        else
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
     }
 
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course, Principal principal) {
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto, Principal principal) {
 
         Lecturer lecturer = getLecturer(principal);
+        courseDto.setLecturer(lecturer);
+        CourseDto savedCourse = courseService.createCourse(courseDto);
 
-        course.setLecturer(lecturer);
-
-        Course savedCourse = courseService.createCourse(course);
-
-        if (savedCourse != null){
+        if (savedCourse != null) {
             return new ResponseEntity<>(savedCourse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -94,58 +93,43 @@ public class CourseController {
     // Delete a course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<MessageResponse> deleteCourse(@PathVariable Long id, Principal principal) {
 
         Lecturer lecturer = getLecturer(principal);
 
-        Optional<Course> course = courseRepository.findById(id);
+        CourseDto optionalCourse = courseService.getCourseById(id);
 
-        if (course.isEmpty())
-            return new ResponseEntity<>(new MessageResponse("Course not Found !"), HttpStatus.NOT_FOUND);
+        if (null == optionalCourse)
+            return new ResponseEntity<>(new MessageResponse("Course was not Found !"), HttpStatus.NOT_FOUND);
 
-        if (course.isPresent() && lecturer != course.get().getLecturer())
-            return new ResponseEntity<>(new MessageResponse("Cannot delete Course: Not authorized "),HttpStatus.UNAUTHORIZED);
+        if (lecturer != optionalCourse.getLecturer())
+            return new ResponseEntity<>(new MessageResponse("You are not authorized to delete this course, please contact an administrator or check your permissions"), HttpStatus.UNAUTHORIZED);
 
-        courseRepository.deleteById(id);
-
-        return new ResponseEntity<>(new MessageResponse("Course successfully deleted !"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Course deleted successfully !"), HttpStatus.OK);
     }
 
     // Update a course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable("id") Long id, @RequestBody Course course, Principal principal) {
+    public ResponseEntity<CourseDto> updateCourse(@PathVariable("id") Long id, @RequestBody CourseDto courseDto, Principal principal) {
 
-        Lecturer lecturer = getLecturer(principal);
+        // check if the given course exists
+        if (null == courseService.getCourseById(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        Course existingCourse = courseService.getCourseById(id);
-
-        if(existingCourse.getLecturer() != lecturer)
+        // check if Lecturer is permitted to update
+        if (courseService.getCourseById(id).getLecturer() != getLecturer(principal))
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 
-        if (existingCourse == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // update Course
+        CourseDto updatedCourse = courseService.updateCourse(id, Course.toEntity(courseDto));
+
+        if (updatedCourse == null)
+            return new ResponseEntity<>(updatedCourse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
+
         }
-
-        existingCourse.setName(course.getName());
-        existingCourse.setDegree(course.getDegree());
-        existingCourse.setStudentCount(course.getStudentCount());
-        existingCourse.setTimeStart(course.getTimeStart());
-        existingCourse.setTimeEnd(course.getTimeEnd());
-        existingCourse.setDates(course.getDates());
-        existingCourse.setStudentCount(course.getStudentCount());
-        existingCourse.setLecturer(lecturer);
-        existingCourse.setEvaluations(course.getEvaluations());
-
-        Course updatedCourse = courseService.updateCourse(existingCourse);
-
-    if(updatedCourse == null)
-        return new ResponseEntity<>(updatedCourse, HttpStatus.INTERNAL_SERVER_ERROR);
-
-    return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
-
-    }
-
 
 }
 

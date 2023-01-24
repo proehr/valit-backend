@@ -1,15 +1,19 @@
 package com.edu.m7.feedback.model.entity;
 
+import com.edu.m7.feedback.model.dto.CourseDto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -43,5 +47,20 @@ public class Course {
     private Lecturer lecturer;
     @OneToMany(mappedBy = "course")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
+
+    public static Course toEntity(CourseDto courseDto){
+        return Course.builder()
+                .id(courseDto.getId())
+                .name(courseDto.getName())
+                .degree(courseDto.getDegree())
+                .timeStart(courseDto.getTimeStart())
+                .timeEnd(courseDto.getTimeEnd())
+                .dates(courseDto.getDates())
+                .studentCount(courseDto.getStudentCount())
+                .lecturer(courseDto.getLecturer())
+                .evaluations(courseDto.getEvaluations())
+                .build();
+    }
+
 
 }
