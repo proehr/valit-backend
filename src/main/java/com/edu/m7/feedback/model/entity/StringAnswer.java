@@ -8,19 +8,12 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "string_answer")
-public class StringAnswer {
-    @Id
+public class StringAnswer extends Answer{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "string_answer_id", nullable = false)
-    private Long id;
+    private Long stringAnswerId;
 
     @Column(name = "value")
     @Setter
     private String value;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question")
-    @Setter
-    private Question question;
-
 }

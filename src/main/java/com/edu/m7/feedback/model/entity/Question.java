@@ -19,8 +19,12 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "evaluation")
     private Evaluation evaluation;
-    @Column(name = "value")
-    private String value;
+
+    @Column(name = "question_key")
+    private String questionKey;
+
+    @Column(name = "question_value")
+    private Integer questionValue;
 
     @Column(name = "type", columnDefinition = "question_type")
     @Enumerated(EnumType.STRING)
