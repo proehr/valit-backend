@@ -17,9 +17,6 @@ public class Evaluation {
     @Column(name = "evaluation_id", nullable = false)
     private Long id;
 
-    @Column(name = "date")
-    private LocalDate date;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_fk")
     private Course course;
@@ -27,5 +24,12 @@ public class Evaluation {
     @Column(name = "type", columnDefinition = "evaluation_type")
     @Enumerated(EnumType.STRING)
     private EvaluationType type;
+
+    @Column(name = "title")
+    private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "date_fk")
+    private Date date;
 
 }
