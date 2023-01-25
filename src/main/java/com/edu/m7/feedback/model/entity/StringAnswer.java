@@ -1,19 +1,20 @@
 package com.edu.m7.feedback.model.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Getter
 @Entity
 @Table(name = "string_answer")
+@NoArgsConstructor
 public class StringAnswer extends Answer{
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "string_answer_id", nullable = false)
-    private Long stringAnswerId;
-
     @Column(name = "value")
     @Setter
     private String value;
+
 }
