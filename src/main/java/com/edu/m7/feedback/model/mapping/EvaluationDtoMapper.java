@@ -5,12 +5,7 @@ import com.edu.m7.feedback.model.dto.EvaluationDto;
 import com.edu.m7.feedback.model.dto.IntAnswerDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
 import com.edu.m7.feedback.model.dto.StringAnswerDto;
-import com.edu.m7.feedback.model.entity.Answer;
-import com.edu.m7.feedback.model.entity.Course;
-import com.edu.m7.feedback.model.entity.Evaluation;
-import com.edu.m7.feedback.model.entity.IntAnswer;
-import com.edu.m7.feedback.model.entity.Question;
-import com.edu.m7.feedback.model.entity.StringAnswer;
+import com.edu.m7.feedback.model.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.SubclassExhaustiveStrategy;
 import org.mapstruct.SubclassMapping;
@@ -31,4 +26,7 @@ public interface EvaluationDtoMapper {
     AnswerDto answerEntityToDto(Answer answer);
     StringAnswerDto stringAnswerEntityToDto(StringAnswer stringAnswer);
     IntAnswerDto intAnswerEntityToDto(IntAnswer intAnswer);
+    default Long accountToId(Account account) {
+        return account.getAccountId();
+    }
 }
