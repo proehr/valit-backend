@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -31,8 +30,8 @@ public class Course {
     @Column(name = "time_end")
     private LocalTime timeEnd;
 
-    @Column(name = "dates", columnDefinition = "date[](13)")
-    private LocalDate[] dates;
+    @OneToMany(mappedBy = "course")
+    private Set<Date> dates = new LinkedHashSet<>();
 
     @Column(name = "student_count")
     private Integer studentCount;
@@ -40,6 +39,7 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecturer_fk")
     private Lecturer lecturer;
+
     @OneToMany(mappedBy = "course")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
 
