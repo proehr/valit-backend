@@ -56,4 +56,7 @@ public interface EvaluationDtoMapper {
     ChoiceQuestionDto choiceQuestionEntityToDto(ChoiceQuestion choiceQuestion);
 
     QuestionChoiceDto map(QuestionChoice value);
+    default Long accountToId(Account account) {
+        return account.getAccountId();
+    }
 }
