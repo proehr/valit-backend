@@ -1,10 +1,12 @@
 package com.edu.m7.feedback.model.entity;
 
 import com.edu.m7.feedback.model.EvaluationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -27,8 +29,7 @@ public class Evaluation {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date_fk")
-    private Date date;
+    @Column(name = "date")
+    private LocalDate date;
 
 }

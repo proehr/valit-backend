@@ -80,3 +80,20 @@ drop column dates;
 
 alter table evaluation
 drop column date;
+
+
+alter table course
+drop column date_fk;
+
+alter table date
+    add course_fk bigint;
+
+alter table date
+    add constraint date_course_course_id_fk
+        foreign key (course_fk) references course (course_id);
+
+alter table evaluation
+    drop column date_fk;
+
+alter table evaluation
+    add date date;

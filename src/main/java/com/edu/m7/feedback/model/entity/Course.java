@@ -30,9 +30,8 @@ public class Course {
     @Column(name = "time_end")
     private LocalTime timeEnd;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date_fk")
-    private Date date;
+    @OneToMany(mappedBy = "course")
+    private Set<Date> dates = new LinkedHashSet<>();
 
     @Column(name = "student_count")
     private Integer studentCount;
@@ -40,6 +39,7 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecturer_fk")
     private Lecturer lecturer;
+
     @OneToMany(mappedBy = "course")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
 
