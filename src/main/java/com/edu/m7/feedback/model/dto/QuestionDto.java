@@ -10,11 +10,12 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionDto {
+public abstract class QuestionDto {
 
     private Long id;
     private String questionKey;
     private Integer questionValue;
-    private QuestionType type;
+    private Integer sectionNumber;
     private Set<AnswerDto> answers;
+    private QuestionType questionType;
 }
