@@ -4,9 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class AnswerDto {
-    private Long id;
+public class ChoiceQuestionDto extends QuestionDto {
+
+    private Set<QuestionChoiceDto> choices;
 }

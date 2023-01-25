@@ -1,14 +1,13 @@
 package com.edu.m7.feedback.model.entity;
 
-import com.edu.m7.feedback.model.QuestionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +23,11 @@ import java.util.Set;
 @Entity
 @Table(name = "question")
 @NoArgsConstructor
-public class Question {
+@DiscriminatorColumn(
+        discriminatorType = DiscriminatorType.STRING,
+        name = "type"
+)
+public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id", nullable = false)
@@ -44,9 +47,8 @@ public class Question {
     private Integer questionValue;
 
     @Setter
-    @Column(name = "type", columnDefinition = "question_type")
-    @Enumerated(EnumType.STRING)
-    private QuestionType type;
+    @Column(name = "section_number")
+    private Integer sectionNumber;
 
     @OneToMany(mappedBy = "question")
     private Set<Answer> answers = new LinkedHashSet<>();
