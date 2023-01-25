@@ -44,22 +44,19 @@ public class Course {
     @Setter
     private LocalTime timeEnd;
 
-    @Column(name = "dates", columnDefinition = "date[](13)")
-    @Setter
-    private String dates;
+    @OneToMany(mappedBy = "course")
+    private Set<Date> dates = new LinkedHashSet<>();
 
     @Column(name = "student_count")
     @Setter
     private Integer studentCount;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecturer_fk")
     @Setter
     private Lecturer lecturer;
 
     @OneToMany(mappedBy = "course")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
-
-
 
 }
