@@ -28,4 +28,9 @@ public abstract class Answer {
     @Setter
     private Question question;
 
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_fk")
+    private Account account;
+
 }

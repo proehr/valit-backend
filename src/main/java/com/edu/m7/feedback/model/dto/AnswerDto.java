@@ -9,4 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public abstract class AnswerDto {
     private Long answerId;
+
+    private Long account;
 }
