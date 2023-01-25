@@ -3,15 +3,9 @@
 -- changeset liquibase:20221227_1239_hordelt_create_tables
 create sequence evaluation_course_id_seq;
 
-alter sequence evaluation_course_id_seq owner to postgres;
-
 create type evaluation_type as enum ('REGULAR', 'FINAL');
 
-alter type evaluation_type owner to postgres;
-
 create type question_type as enum ('TEXT', 'SCALE');
-
-alter type question_type owner to postgres;
 
 create table lecturer
 (
@@ -25,9 +19,6 @@ create table lecturer
         constraint lecturer_account_account_id_fk
             references account
 );
-
-alter table lecturer
-    owner to postgres;
 
 create table course
 (
@@ -44,9 +35,6 @@ create table course
             references lecturer
 );
 
-alter table course
-    owner to postgres;
-
 create table evaluation
 (
     type          evaluation_type,
@@ -58,9 +46,6 @@ create table evaluation
         constraint evaluation_pk
             primary key
 );
-
-alter table evaluation
-    owner to postgres;
 
 alter sequence evaluation_course_id_seq owned by evaluation.evaluation_id;
 
@@ -76,9 +61,6 @@ create table question
     value       text
 );
 
-alter table question
-    owner to postgres;
-
 create table "user"
 (
     user_id    bigserial
@@ -86,9 +68,6 @@ create table "user"
             primary key,
     identifier text
 );
-
-alter table "user"
-    owner to postgres;
 
 create table int_answer
 (
@@ -104,9 +83,6 @@ create table int_answer
             primary key
 );
 
-alter table int_answer
-    owner to postgres;
-
 create table string_answer
 (
     value            text,
@@ -120,8 +96,4 @@ create table string_answer
         constraint string_answer_pk
             primary key
 );
-
-alter table string_answer
-    owner to postgres;
-
 
