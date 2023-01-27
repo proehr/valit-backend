@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-public abstract class AnswerDto {
-    private Long account;
+public class QuestionChoiceDto {
+
+    private String choiceKey;
+    private Integer choiceValue;
 }
