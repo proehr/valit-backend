@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public abstract class AnswerDto {
-    private Long id;
     private Long account;
 }
