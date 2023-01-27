@@ -9,11 +9,13 @@ import com.edu.m7.feedback.payload.request.LoginRequest;
 import com.edu.m7.feedback.payload.request.RegistrationRequest;
 import com.edu.m7.feedback.payload.request.SignupRequest;
 import com.edu.m7.feedback.payload.response.JwtResponse;
+import com.edu.m7.feedback.payload.response.LecturerJwtResponse;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.security.FeedbackUserDetails;
 import com.edu.m7.feedback.security.jwt.JwtUtils;
 import com.edu.m7.feedback.service.AccountService;
 import com.edu.m7.feedback.service.LecturerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,21 +57,40 @@ public class AuthController {
     }
 
     @PostMapping("/signin-as-lecturer")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<LecturerJwtResponse> authenticateLecturer(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-       FeedbackUserDetails userDetails = (FeedbackUserDetails) authentication.getPrincipal();
-       Lecturer lecturer = lecturerService.getLecturerByUsername(userDetails.getUsername());
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getUsername(), lecturer.getLecturerId(), lecturer.getTitle(), lecturer.getFirstName(), lecturer.getLastName()));
+        FeedbackUserDetails userDetails = (FeedbackUserDetails) authentication.getPrincipal();
+        Lecturer lecturer = lecturerService.getLecturerByUsername(userDetails.getUsername());
+        return ResponseEntity.ok(new LecturerJwtResponse(jwt,
+                userDetails.getUsername(),
+                lecturer.getLecturerId(),
+                lecturer.getTitle(),
+                lecturer.getFirstName(),
+                lecturer.getLastName())
+        );
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/signin-as-student")
+    public ResponseEntity<JwtResponse> authenticateStudent(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        return ResponseEntity.ok(new JwtResponse(jwt));
+    }
+
+    @GetMapping("/userExists")
+    public ResponseEntity<Boolean> userExists(@RequestBody String username) {
+        return ResponseEntity.ok(accountService.userExists(username));
+    }
+
+    @PostMapping("/register")
     public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountService.userExists(signUpRequest.getUsername())) {
             return ResponseEntity
@@ -85,21 +106,27 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @GetMapping("/userExists")
-    public ResponseEntity<Boolean> userExists(@RequestBody String username) {
-        return ResponseEntity.ok(accountService.userExists(username));
-    }
-
     @PostMapping("/full-register")
-    public ResponseEntity<MessageResponse> registerUserWithProfile(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        SignupRequest signupRequest = new SignupRequest(registrationRequest.getUsername(), AccountType.LECTURER, registrationRequest.getPassword());
+    public ResponseEntity<MessageResponse> registerUserWithProfile(
+            @Valid @RequestBody RegistrationRequest registrationRequest
+    ) {
+        SignupRequest signupRequest = new SignupRequest(
+                registrationRequest.getUsername(),
+                AccountType.LECTURER,
+                registrationRequest.getPassword()
+        );
         ResponseEntity<MessageResponse> signupResponse = registerUser(signupRequest);
 
-        if (signupResponse.getStatusCodeValue() != 200) {
+        if (signupResponse.getStatusCodeValue() != HttpStatus.OK.value()) {
             return ResponseEntity.badRequest().body(new MessageResponse("errorEmailTaken"));
         }
 
-        lecturerService.createLecturer(registrationRequest.getUsername(), registrationRequest.getTitle(), registrationRequest.getFirstName(), registrationRequest.getLastName());
+        lecturerService.createLecturer(
+                registrationRequest.getUsername(),
+                registrationRequest.getTitle(),
+                registrationRequest.getFirstName(),
+                registrationRequest.getLastName()
+        );
         return ResponseEntity.ok(new MessageResponse("User registered and created lecturer successfully!"));
     }
 }
