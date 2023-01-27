@@ -14,7 +14,7 @@ public abstract class QuestionDto {
 
     private Long id;
     private String questionKey;
-    private Integer questionValue;
+    private Integer questionPosition;
     private Integer sectionNumber;
     private Set<AnswerDto> answers;
     private QuestionType questionType;

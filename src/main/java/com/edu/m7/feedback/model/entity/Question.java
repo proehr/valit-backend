@@ -43,8 +43,8 @@ public abstract class Question {
     private String questionKey;
 
     @Setter
-    @Column(name = "question_value")
-    private Integer questionValue;
+    @Column(name = "question_position")
+    private Integer questionPosition;
 
     @Setter
     @Column(name = "section_number")
