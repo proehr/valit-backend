@@ -83,10 +83,17 @@ public class CourseService {
 
     public CourseResponseDto updateCourse(Long id, CourseRequestDto courseDto) {
         Course course = courseRepository.findById(id).orElseThrow();
-        //course = mapper.updateEntityFromDto(courseDto, course);
+        Semester semester = course.getSemester();
+        if(courseDto.getSemester() != null) {
+            semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
+        }
+        Set<Date> dates = null;
+        if (courseDto.getWeekday() != null || courseDto.getInterval() != null) {
+            dates = getDatesBetween(semester.getStartDate(), semester.getEndDate(), courseDto.getWeekday(), courseDto.getInterval());
+        }
+        course = mapper.updateEntityFromDto(courseDto, course, dates, semester);
 
-        //return mapper.entityToDto(courseRepository.save(course));
-        return null;
+        return mapper.entityToDto(courseRepository.save(course));
     }
 
     public void deleteCourse(Long id) {
