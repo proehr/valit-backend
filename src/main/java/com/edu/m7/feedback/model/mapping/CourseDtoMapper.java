@@ -16,7 +16,7 @@ import java.util.Set;
 @Mapper
 public interface CourseDtoMapper {
 
-    //@Mapping(target = "dates", ignore = true)
+    //@Mapping(target = "semester", ignore = true)
     default Course dtoToEntity(CourseRequestDto dto, Set<Date> dates, Semester semester) {
         if ( dto == null ) {
             return null;
@@ -39,7 +39,39 @@ public interface CourseDtoMapper {
     CourseResponseDto entityToDto(Course entity);
 
     //@Mapping(target = "dates", ignore = true)
-    //Course updateEntityFromDto(CourseRequestDto dto, @MappingTarget Course course);
+    default Course updateEntityFromDto(CourseRequestDto dto, Course course, Set<Date> dates, Semester semester) {
+        if ( dto == null ) {
+            return null;
+        }
+        if(dto.getSemester() != null) {
+            course.setSemester(semester);
+        }
+        if(dto.getStudentCount() != null) {
+            course.setStudentCount(dto.getStudentCount());
+        }
+        if(dto.getName() != null) {
+            course.setName(dto.getName());
+        }
+        if(dto.getDegree() != null) {
+            course.setDegree(dto.getDegree());
+        }
+        if(dto.getTimeStart() != null) {
+            course.setTimeStart(dto.getTimeStart());
+        }
+        if(dto.getTimeEnd() != null) {
+            course.setTimeEnd(dto.getTimeEnd());
+        }
+        if(dto.getInterval() != null) {
+            course.setInterval(dto.getInterval());
+        }
+        if(dates != null) {
+            course.setDates(dates);
+        }
+        if(dto.getWeekday() != null) {
+            course.setWeekday(dto.getWeekday());
+        }
+        return course;
+    }
 
     default LocalDate dateEntityToLocalDate(Date date){
         return date.getLocalDate();
