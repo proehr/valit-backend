@@ -1,19 +1,13 @@
 package com.edu.m7.feedback.model.entity;
 
+import com.edu.m7.feedback.model.IntervalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -45,6 +39,7 @@ public class Course {
     private LocalTime timeEnd;
 
     @OneToMany(mappedBy = "course")
+    @Setter
     private Set<Date> dates = new LinkedHashSet<>();
 
     @Column(name = "student_count")
@@ -58,5 +53,20 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "interval")
+    @Setter
+    private IntervalType interval;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "semester_fk")
+    private Semester semester;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "weekday")
+    @Setter
+    private DayOfWeek weekday;
 
 }
