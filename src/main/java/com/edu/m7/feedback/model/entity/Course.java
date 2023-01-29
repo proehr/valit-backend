@@ -1,6 +1,7 @@
 package com.edu.m7.feedback.model.entity;
 
 import com.edu.m7.feedback.model.IntervalType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -64,9 +65,9 @@ public class Course {
     @JoinColumn(name = "semester_fk")
     private Semester semester;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "weekday")
-    @Setter
     private DayOfWeek weekday;
 
 }

@@ -67,33 +67,31 @@ public class CourseService {
     }
 
     public List<CourseResponseDto> getAllCourses(Lecturer lecturer) {
-        return courseRepository
+       return courseRepository
                 .findByLecturer(lecturer)
                 .stream()
                 .map(mapper::entityToDto)
+                .map(dto -> {dto.setDates(getDatesBetween(dto.getSemester().getStartDate(),dto.getSemester().getEndDate(),dto.getWeekday(),dto.getInterval()).stream().map(mapper::dateEntityToLocalDate).collect(Collectors.toSet())); return  dto;})
                 .collect(Collectors.toList());
     }
 
     public CourseResponseDto createCourse(CourseRequestDto courseDto, Lecturer lecturer) {
         Semester semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
-        Course course = mapper.dtoToEntity(courseDto, getDatesBetween(semester.getStartDate(), semester.getEndDate(), courseDto.getWeekday(), courseDto.getInterval()), semester);
+        Course course = mapper.dtoToEntity(courseDto);
+        course.setDates(getDatesBetween(semester.getStartDate(),semester.getEndDate(),course.getWeekday(),course.getInterval()));
         course.setLecturer(lecturer);
+        course.setSemester(semester);
         return mapper.entityToDto(courseRepository.save(course));
     }
 
     public CourseResponseDto updateCourse(Long id, CourseRequestDto courseDto) {
         Course course = courseRepository.findById(id).orElseThrow();
-        Semester semester = course.getSemester();
-        if(courseDto.getSemester() != null) {
-            semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
-        }
-        Set<Date> dates = null;
-        if (courseDto.getWeekday() != null || courseDto.getInterval() != null) {
-            dates = getDatesBetween(semester.getStartDate(), semester.getEndDate(), courseDto.getWeekday(), courseDto.getInterval());
-        }
-        course = mapper.updateEntityFromDto(courseDto, course, dates, semester);
-
-        return mapper.entityToDto(courseRepository.save(course));
+        course = mapper.updateEntityFromDto(courseDto, course);
+        Semester semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
+        course.setDates(getDatesBetween(semester.getStartDate(),semester.getEndDate(),course.getWeekday(),course.getInterval()));
+        course.setSemester(semester);
+        courseRepository.save(course);
+        return mapper.entityToDto(course);
     }
 
     public void deleteCourse(Long id) {
