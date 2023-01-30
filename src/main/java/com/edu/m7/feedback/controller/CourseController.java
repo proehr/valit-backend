@@ -1,6 +1,7 @@
 package com.edu.m7.feedback.controller;
 
-import com.edu.m7.feedback.model.dto.CourseDto;
+import com.edu.m7.feedback.payload.request.CourseRequestDto;
+import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.service.CourseService;
@@ -40,10 +41,10 @@ public class CourseController {
     // retrieve all the courses of the currently logged in Lecturer
     @GetMapping
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    public ResponseEntity<List<CourseDto>> getAllCourses(Principal principal) {
+    public ResponseEntity<List<CourseResponseDto>> getAllCourses(Principal principal) {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
-        List<CourseDto> coursesDto = courseService.getAllCourses(lecturer);
+        List<CourseResponseDto> coursesDto = courseService.getAllCourses(lecturer);
 
         if (coursesDto != null) {
             return new ResponseEntity<>(coursesDto, HttpStatus.OK);
@@ -55,10 +56,10 @@ public class CourseController {
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto, Principal principal) {
+    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto courseDto, Principal principal) {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
-        CourseDto savedCourse = courseService.createCourse(courseDto, lecturer);
+        CourseResponseDto savedCourse = courseService.createCourse(courseDto, lecturer);
 
         if (savedCourse != null) {
             return new ResponseEntity<>(savedCourse, HttpStatus.OK);
@@ -92,9 +93,9 @@ public class CourseController {
     // Update a course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> updateCourse(
+    public ResponseEntity<CourseResponseDto> updateCourse(
             @PathVariable("id") Long id,
-            @RequestBody CourseDto courseDto,
+            @RequestBody CourseRequestDto courseDto,
             Principal principal
     ) {
 
@@ -107,7 +108,7 @@ public class CourseController {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
         // update Course
-        CourseDto updatedCourse = courseService.updateCourse(id, courseDto);
+        CourseResponseDto updatedCourse = courseService.updateCourse(id, courseDto);
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
 
     }

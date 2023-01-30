@@ -24,6 +24,7 @@ public class Date{
     private LocalDate localDate;
 
     @JsonIgnore
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_fk")
     private Course course;
