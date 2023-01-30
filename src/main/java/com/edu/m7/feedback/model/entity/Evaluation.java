@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -50,6 +51,7 @@ public class Evaluation {
     private LocalDate date;
 
     @OneToMany(mappedBy = "evaluation")
+    @OrderBy("sectionNumber, questionPosition")
     private Set<Question> questions = new LinkedHashSet<>();
 
 }
