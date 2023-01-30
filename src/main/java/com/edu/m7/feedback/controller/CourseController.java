@@ -57,16 +57,16 @@ public class CourseController {
     // retrieve a single course by id
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<CourseResponseDto> getCourse(@PathVariable Long id, Principal principal) {
         Lecturer lecturer = lecturerService.getLecturer(principal);
-        CourseDto courseDto = courseService.getCourseById(id, lecturer);
+        CourseResponseDto courseDto = courseService.getCourseById(id, lecturer);
 
-        if(courseDto != null)
+        if(courseDto != null) {
             return new ResponseEntity<>(courseDto, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
-
 
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -122,6 +122,7 @@ public class CourseController {
         if (!courseService.getLecturerByCourseId(id).equals(lecturerService.getLecturer(principal).getLecturerId())) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
+
         // update Course
         CourseResponseDto updatedCourse = courseService.updateCourse(id, courseDto);
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);

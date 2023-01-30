@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,6 +72,21 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
+    public CourseResponseDto getCourseById(Long id, Lecturer lecturer) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if(optionalCourse.isEmpty())
+            return null;
+        if(!Objects.equals(optionalCourse.get().getLecturer(), lecturer) )
+            return null;
+
+        return optionalCourse.map(mapper::entityToDto)
+                .map(dto -> {dto.setDates(getDatesBetween(dto.getSemester().getStartDate(),dto.getSemester().getEndDate(),dto.getWeekday(),dto.getInterval()).stream().map(mapper::dateEntityToLocalDate).collect(Collectors.toSet())); return  dto;})
+                .get();
+
+    }
+
+
     public CourseResponseDto createCourse(CourseRequestDto courseDto, Lecturer lecturer) {
         Semester semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
         Course course = mapper.dtoToEntity(courseDto);
@@ -98,10 +110,6 @@ public class CourseService {
         courseRepository.deleteById(id);
     }
 
-    public CourseResponseDto getCourseById(Long id) {
-        Optional<Course> optionalCourse = courseRepository.findById(id);
-        return optionalCourse.map(mapper::entityToDto).orElse(null);
-    }
 
     public Long getLecturerByCourseId(Long id) {
         Optional<Course> optionalCourse = courseRepository.findById(id);
