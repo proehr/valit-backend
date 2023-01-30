@@ -53,6 +53,21 @@ public class CourseController {
         }
     }
 
+
+    // retrieve a single course by id
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id, Principal principal) {
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+        CourseDto courseDto = courseService.getCourseById(id, lecturer);
+
+        if(courseDto != null)
+            return new ResponseEntity<>(courseDto, HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
@@ -100,7 +115,7 @@ public class CourseController {
     ) {
 
         // check if the given course exists
-        if (null == courseService.getCourseById(id)) {
+        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal)) ) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // check if Lecturer is permitted to update
