@@ -83,7 +83,6 @@ public class CourseService {
         return optionalCourse.map(mapper::entityToDto)
                 .map(dto -> {dto.setDates(getDatesBetween(dto.getSemester().getStartDate(),dto.getSemester().getEndDate(),dto.getWeekday(),dto.getInterval()).stream().map(mapper::dateEntityToLocalDate).collect(Collectors.toSet())); return  dto;})
                 .get();
-
     }
 
 

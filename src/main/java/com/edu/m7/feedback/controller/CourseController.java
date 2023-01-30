@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/courses")
 @Slf4j
 public class CourseController {
-
     private final CourseService courseService;
     private final LecturerService lecturerService;
 
