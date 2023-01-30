@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,8 +49,10 @@ public class CourseService {
         courseRepository.deleteById(id);
     }
 
-    public CourseDto getCourseById(Long id) {
+    public CourseDto getCourseById(Long id, Lecturer lecturer){
         Optional<Course> optionalCourse = courseRepository.findById(id);
+        if(!Objects.equals(optionalCourse.get().getLecturer(), lecturer) )
+            return null;
         return optionalCourse.map(mapper::entityToDto).orElse(null);
     }
 
