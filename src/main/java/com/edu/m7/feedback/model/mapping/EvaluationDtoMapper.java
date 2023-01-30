@@ -3,7 +3,7 @@ package com.edu.m7.feedback.model.mapping;
 import com.edu.m7.feedback.model.QuestionType;
 import com.edu.m7.feedback.model.dto.AnswerDto;
 import com.edu.m7.feedback.model.dto.ChoiceQuestionDto;
-import com.edu.m7.feedback.model.dto.EvaluationDto;
+import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.IntAnswerDto;
 import com.edu.m7.feedback.model.dto.QuestionChoiceDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
@@ -27,7 +27,7 @@ import org.mapstruct.SubclassMapping;
 @Mapper(subclassExhaustiveStrategy = SubclassExhaustiveStrategy.RUNTIME_EXCEPTION)
 public interface EvaluationDtoMapper {
 
-    EvaluationDto entityToDto(Evaluation entity);
+    EvaluationResponseDto entityToDto(Evaluation entity);
 
     default Long courseToId(Course course) {
         return course.getId();

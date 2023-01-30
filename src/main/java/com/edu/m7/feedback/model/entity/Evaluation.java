@@ -33,6 +33,10 @@ public class Evaluation {
     private Long id;
 
     @Setter
+    @Column(name = "shortcode")
+    private Integer shortcode;
+
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_fk")
     private Course course;
