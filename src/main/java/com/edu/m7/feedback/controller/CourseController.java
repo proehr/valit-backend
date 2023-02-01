@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/courses")
 @Slf4j
+@CrossOrigin
 public class CourseController {
     private final CourseService courseService;
     private final LecturerService lecturerService;
@@ -60,7 +62,7 @@ public class CourseController {
         Lecturer lecturer = lecturerService.getLecturer(principal);
         CourseResponseDto courseDto = courseService.getCourseById(id, lecturer);
 
-        if(courseDto != null) {
+        if (courseDto != null) {
             return new ResponseEntity<>(courseDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -70,7 +72,10 @@ public class CourseController {
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto courseDto, Principal principal) {
+    public ResponseEntity<CourseResponseDto> createCourse(
+            @RequestBody CourseRequestDto courseDto,
+            Principal principal
+    ) {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
         CourseResponseDto savedCourse = courseService.createCourse(courseDto, lecturer);
@@ -114,7 +119,7 @@ public class CourseController {
     ) {
 
         // check if the given course exists
-        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal)) ) {
+        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // check if Lecturer is permitted to update
