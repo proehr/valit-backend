@@ -1,7 +1,7 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.dto.AnswerDto;
-import com.edu.m7.feedback.model.dto.EvaluationDto;
+import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
 import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.model.entity.Evaluation;
@@ -33,7 +33,7 @@ public class EvaluationService {
         this.repository = repository;
     }
 
-    public EvaluationDto loadEvaluationById(Long id) throws UsernameNotFoundException {
+    public EvaluationResponseDto loadEvaluationById(Long id) throws UsernameNotFoundException {
         return mapper.entityToDto(repository.findById(id).orElseThrow());
     }
 
@@ -42,8 +42,8 @@ public class EvaluationService {
         return optionalCourse.map(course -> course.getLecturer().getLecturerId()).orElseThrow();
     }
 
-    public EvaluationDto loadEvaluationResultByParticipant(Long id, Long participantId) {
-        EvaluationDto evaluation = mapper.entityToDto(repository.findById(id).orElseThrow());
+    public EvaluationResponseDto loadEvaluationResultByParticipant(Long id, Long participantId) {
+        EvaluationResponseDto evaluation = mapper.entityToDto(repository.findById(id).orElseThrow());
         for (QuestionDto question : evaluation.getQuestions()) {
             Set<AnswerDto> participantAnswer = question
                     .getAnswers()
@@ -71,5 +71,9 @@ public class EvaluationService {
         } else {
             return Collections.emptyList();
         }
+    }
+    public EvaluationResponseDto getEvaluationByShortcode(Integer shortcode) {
+       Evaluation evaluation = repository.findEvaluationByShortcode(shortcode);
+       return mapper.entityToDto(evaluation);
     }
 }
