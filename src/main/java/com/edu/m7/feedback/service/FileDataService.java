@@ -3,47 +3,57 @@ package com.edu.m7.feedback.service;
 import com.edu.m7.feedback.model.entity.FileData;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.FileDataRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class FileDataService {
+    private String folderPath;
 
-    @Autowired
-    private FileDataRepository fileDataRepository;
-    private static final String FOLDER_NAME = "feedback-backend/repo/";
-    private final String FOLDER_PATH = System.getProperty("user.home") + "/IdeaProjects/" + FOLDER_NAME;
+    private final FileDataRepository fileDataRepository;
+
+    public FileDataService(FileDataRepository fileDataRepository) {
+        this.fileDataRepository = fileDataRepository;
+    }
+
+    @Value("${valit.app.files.directory}")
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
+        File directory = new File(folderPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
 
     public String uploadFile(MultipartFile file, Lecturer lecturer) throws IOException {
-        String filePath=FOLDER_PATH+file.getOriginalFilename();
+        File lecturerFolder = new File(folderPath, String.valueOf(lecturer.getLecturerId()));
+        if (!lecturerFolder.exists()) {
+            lecturerFolder.mkdirs();
+        }
+        Path filePath = Path.of(lecturerFolder.toString(), file.getOriginalFilename());
+        file.transferTo(filePath);
 
-        FileData fileData=fileDataRepository.save(FileData.builder()
+        fileDataRepository.save(FileData.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
-                .filePath(filePath)
+                .filePath(filePath.toString())
                 .lecturer(lecturer).build());
 
-        file.transferTo(new File(filePath));
-
-        if (fileData != null) {
-            return "file uploaded successfully : " + file.getOriginalFilename();
-        }
-        return null;
+        return "file uploaded successfully : " + file.getOriginalFilename();
     }
 
     public byte[] downloadFile(String filePath) throws IOException {
-        byte[] file = Files.readAllBytes(new File(filePath).toPath());
-        return file;
+        return Files.readAllBytes(new File(filePath).toPath());
     }
 
-
-    public String getFilePath(Lecturer lecturer){
-        return fileDataRepository.findByLecturer(lecturer).get().getFilePath();
+    public String getFilePath(Lecturer lecturer) {
+        return fileDataRepository.findByLecturer(lecturer).orElseThrow().getFilePath();
     }
 
 
