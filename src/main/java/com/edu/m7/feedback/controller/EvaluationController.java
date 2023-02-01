@@ -1,20 +1,23 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.dto.AnswerDto;
+import com.edu.m7.feedback.model.dto.QuestionDto;
+import com.edu.m7.feedback.model.entity.Question;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/evaluations")
@@ -74,6 +77,14 @@ public class EvaluationController {
             log.info("Could not find participants of evaluation", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
+    @GetMapping("/questions")
+    ResponseEntity<EvaluationResponseDto> getQuestions(@RequestBody Integer shortcode) {
+        //TODO: Wenn antowrten schon abgegeben wurden, werden die trotzdem noch übertrageen
+        EvaluationResponseDto evaluationResponseDto = evaluationService.getEvaluationByShortcode(shortcode);
+        return ResponseEntity.ok(evaluationResponseDto);
     }
 
 
