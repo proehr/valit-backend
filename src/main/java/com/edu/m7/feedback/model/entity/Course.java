@@ -70,4 +70,8 @@ public class Course {
     @Column(name = "weekday")
     private DayOfWeek weekday;
 
+    @Setter
+    @Column(name = "final_eval_date")
+    private LocalDate finalEvaluationDate;
+
 }
