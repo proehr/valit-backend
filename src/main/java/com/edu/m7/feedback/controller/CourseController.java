@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/courses")
 @Slf4j
+@CrossOrigin
 public class CourseController {
 
     private final CourseService courseService;
@@ -79,7 +81,10 @@ public class CourseController {
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
-    public ResponseEntity<CourseResponseDto> createCourse(@RequestBody CourseRequestDto courseDto, Principal principal) {
+    public ResponseEntity<CourseResponseDto> createCourse(
+            @RequestBody CourseRequestDto courseDto,
+            Principal principal
+    ) {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
         CourseResponseDto savedCourse = courseService.createCourse(courseDto, lecturer);
@@ -123,13 +128,14 @@ public class CourseController {
     ) {
 
         // check if the given course exists
-        if (null == courseService.getCourseById(id)) {
+        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // check if Lecturer is permitted to update
         if (!courseService.getLecturerByCourseId(id).equals(lecturerService.getLecturer(principal).getLecturerId())) {
            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
+
         // update Course
         CourseResponseDto updatedCourse = courseService.updateCourse(id, courseDto);
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
