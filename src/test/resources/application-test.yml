@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/valit_test_db?stringtype=unspecified

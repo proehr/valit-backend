@@ -11,11 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -24,35 +30,42 @@ import java.util.Optional;
 @Slf4j
 public class FileDataController {
 
-    @Autowired
-    private FileDataService fileDataService;
+    private final FileDataService fileDataService;
 
-    @Autowired
-    private LecturerService lecturerService;
-    @Autowired
-    private FileDataRepository fileDataRepository;
+    private final LecturerService lecturerService;
+    private final FileDataRepository fileDataRepository;
+
+    public FileDataController(
+            FileDataService fileDataService,
+            LecturerService lecturerService,
+            FileDataRepository fileDataRepository
+    ) {
+        this.fileDataService = fileDataService;
+        this.lecturerService = lecturerService;
+        this.fileDataRepository = fileDataRepository;
+    }
 
     //Upload or Update the User's profile Picture
     @PostMapping
-    public ResponseEntity<String> uploadOrUpdatePicture(@RequestParam("image") MultipartFile file, Principal principal) throws Exception {
+    public ResponseEntity<String> uploadOrUpdatePicture(
+            @RequestParam("image") MultipartFile file,
+            Principal principal
+    ) throws Exception {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
         String uploadImage;
 
         Optional<FileData> fileData = fileDataRepository.findByLecturer(lecturer);
-        if(fileData.isPresent()){
-            fileDataRepository.delete(fileData.get());
+        if (fileData.isPresent()) {
             try {
-                File foundFile = new File(fileData.get().getFilePath());
-                foundFile.delete();
-            }catch (Exception e){
-                log.info("Could not delete profile picture: "+ e);
+                Files.delete(Path.of(fileData.get().getFilePath()));
+                fileDataRepository.delete(fileData.get());
+            } catch (Exception e) {
+                log.info("Could not delete profile picture: " + e);
             }
-            uploadImage = fileDataService.uploadFile(file, lecturer);
         }
-        else{
-            uploadImage = fileDataService.uploadFile(file, lecturer);
-        }
+
+        uploadImage = fileDataService.uploadFile(file, lecturer);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
@@ -62,7 +75,7 @@ public class FileDataController {
     @GetMapping
     public ResponseEntity<byte[]> getProfilePicture(Principal principal) throws IOException {
 
-        Lecturer lecturer  = lecturerService.getLecturer(principal);
+        Lecturer lecturer = lecturerService.getLecturer(principal);
 
         String filePath = fileDataService.getFilePath(lecturer);
 
@@ -79,15 +92,14 @@ public class FileDataController {
         Lecturer lecturer = lecturerService.getLecturer(principal);
         Optional<FileData> optionalFileData = fileDataRepository.findByLecturer(lecturer);
 
-        if(optionalFileData.isEmpty() )
+        if (optionalFileData.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse("Profile Image not found!"), HttpStatus.NOT_FOUND);
-
+        }
         fileDataRepository.delete(optionalFileData.get());
         try {
-            File file = new File(optionalFileData.get().getFilePath());
-            file.delete();
-        }catch (Exception e){
-            log.info("Could not delete profile picture: "+ e);
+            Files.delete(Path.of(optionalFileData.get().getFilePath()));
+        } catch (Exception e) {
+            log.info("Could not delete profile picture: " + e);
         }
 
         return new ResponseEntity<>(new MessageResponse("Profile image deleted successfully"), HttpStatus.OK);
