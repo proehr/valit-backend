@@ -6,7 +6,12 @@ import com.edu.m7.feedback.model.repository.AccountRepository;
 import com.edu.m7.feedback.model.repository.LecturerRepository;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
@@ -14,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class LecturerController {
     private final LecturerRepository repository;
 
@@ -40,6 +46,7 @@ public class LecturerController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping("/lecturer")
+    // TODO: remove entity from controller method
     ResponseEntity<MessageResponse> createOrUpdateLecturer(@RequestBody Lecturer newLecturer, Principal principal) {
         Account account = getSignedInAccount(principal);
         newLecturer.setAccount(account);
