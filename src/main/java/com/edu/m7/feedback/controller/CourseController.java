@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/courses")
 @Slf4j
 public class CourseController {
-
     private final CourseService courseService;
     private final LecturerService lecturerService;
 
@@ -48,6 +47,21 @@ public class CourseController {
 
         if (coursesDto != null) {
             return new ResponseEntity<>(coursesDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+
+    // retrieve a single course by id
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseResponseDto> getCourse(@PathVariable Long id, Principal principal) {
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+        CourseResponseDto courseDto = courseService.getCourseById(id, lecturer);
+
+        if(courseDto != null) {
+            return new ResponseEntity<>(courseDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -100,13 +114,14 @@ public class CourseController {
     ) {
 
         // check if the given course exists
-        if (null == courseService.getCourseById(id)) {
+        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal)) ) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // check if Lecturer is permitted to update
         if (!courseService.getLecturerByCourseId(id).equals(lecturerService.getLecturer(principal).getLecturerId())) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
+
         // update Course
         CourseResponseDto updatedCourse = courseService.updateCourse(id, courseDto);
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
