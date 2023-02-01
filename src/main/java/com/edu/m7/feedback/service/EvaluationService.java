@@ -72,4 +72,8 @@ public class EvaluationService {
             return Collections.emptyList();
         }
     }
+    public EvaluationResponseDto getEvaluationByShortcode(Integer shortcode) {
+       Evaluation evaluation = repository.findEvaluationByShortcode(shortcode);
+       return mapper.entityToDto(evaluation);
+    }
 }
