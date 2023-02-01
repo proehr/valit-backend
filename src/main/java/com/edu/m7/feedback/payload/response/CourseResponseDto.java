@@ -27,5 +27,6 @@ public class CourseResponseDto {
     private IntervalType interval;
     private SemesterDto semester;
     private DayOfWeek weekday;
+    private LocalDate finalEvaluationDate;
 
 }
