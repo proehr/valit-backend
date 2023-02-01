@@ -1,10 +1,8 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.entity.Account;
-import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.mapping.FeedbackUserDetailsMapper;
 import com.edu.m7.feedback.model.repository.AccountRepository;
-import com.edu.m7.feedback.model.repository.LecturerRepository;
 import com.edu.m7.feedback.security.FeedbackUserDetails;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +31,13 @@ public class AccountService implements UserDetailsManager {
         );
     }
 
+    public Long getAccountIdByUsername(String username) throws UsernameNotFoundException {
+        return repository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No user found with username = " + username))
+                .getAccountId();
+    }
+
     @Override
     public void createUser(UserDetails user) {
         createUser(
@@ -40,7 +45,7 @@ public class AccountService implements UserDetailsManager {
         );
     }
 
-    public void createUser(@Valid Account account){
+    public void createUser(@Valid Account account) {
         repository.save(account);
     }
 
@@ -51,7 +56,7 @@ public class AccountService implements UserDetailsManager {
         );
     }
 
-    public void updateUser(@Valid Account account){
+    public void updateUser(@Valid Account account) {
         repository.save(account);
     }
 
