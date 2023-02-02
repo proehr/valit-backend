@@ -1,11 +1,11 @@
 package com.edu.m7.feedback.controller;
 
-import com.edu.m7.feedback.model.entity.Evaluation;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.MessageResponse;
+import com.edu.m7.feedback.payload.response.SmallEvaluationResponseDto;
 import com.edu.m7.feedback.service.CourseService;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -48,7 +43,11 @@ public class CourseController {
     private final EvaluationService evaluationService;
 
     @Autowired
-    public CourseController(CourseService courseService, LecturerService lecturerService, EvaluationService evaluationService) {
+    public CourseController(
+            CourseService courseService,
+            LecturerService lecturerService,
+            EvaluationService evaluationService
+    ) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
         this.evaluationService = evaluationService;
@@ -78,6 +77,7 @@ public class CourseController {
         }
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
+
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
@@ -133,7 +133,7 @@ public class CourseController {
         }
         // check if Lecturer is permitted to update
         if (!courseService.getLecturerByCourseId(id).equals(lecturerService.getLecturer(principal).getLecturerId())) {
-           return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
 
         // update Course
@@ -144,22 +144,25 @@ public class CourseController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/{id}/all-evaluations")
-    ResponseEntity<List<EvaluationResponseDto>> getEvaluation(@PathVariable Long id, Principal principal) {
-       Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-       if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+    ResponseEntity<List<SmallEvaluationResponseDto>> getAllCourseEvaluations(
+            @PathVariable Long id,
+            Principal principal
+    ) {
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!courseService.getLecturerByCourseId(id).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(courseService.loadEvaluationByCourseId(id));
+        return ResponseEntity.ok(courseService.getEvaluationsByCourseId(id));
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/{id}/newest-evaluation")
     ResponseEntity<EvaluationResponseDto> getNewestEvaluation(@PathVariable Long id, Principal principal) {
-         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-           return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!courseService.getLecturerByCourseId(id).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(courseService.loadEvaluationByCourseId(id).get(0));
+        return ResponseEntity.ok(courseService.getNewestEvaluationByCourseId(id));
 
     }
 
@@ -167,10 +170,10 @@ public class CourseController {
     @GetMapping("/{id}/qr-code")
     ResponseEntity<byte[]> getQRCodeForEvaluation(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        if (!courseService.getLecturerByCourseId(id).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        EvaluationResponseDto evaluation = courseService.loadEvaluationByCourseId(id).get(0);
+        EvaluationResponseDto evaluation = courseService.getNewestEvaluationByCourseId(id);
 
         String code = evaluation.getShortcode().toString();
 
@@ -178,7 +181,7 @@ public class CourseController {
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array
-            image = QRCodeGenerator.getQRCodeImage(code,250,250);
+            image = QRCodeGenerator.getQRCodeImage(code, 250, 250);
 
         } catch (WriterException | IOException e) {
             e.printStackTrace();
@@ -187,7 +190,7 @@ public class CourseController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"image.png")
-                .header("Shortcode",  evaluation.getShortcode().toString() )
+                .header("Shortcode", evaluation.getShortcode().toString())
                 .contentType(MediaType.IMAGE_PNG)
                 .body(image);
 

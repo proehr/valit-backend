@@ -1,15 +1,20 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.IntervalType;
-import com.edu.m7.feedback.model.entity.*;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Date;
+import com.edu.m7.feedback.model.entity.Lecturer;
+import com.edu.m7.feedback.model.entity.Semester;
 import com.edu.m7.feedback.model.mapping.CourseDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
 import com.edu.m7.feedback.model.repository.SemesterRepository;
+import com.edu.m7.feedback.payload.SmallEvaluationResponseMapper;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.repository.CourseRepository;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
+import com.edu.m7.feedback.payload.response.SmallEvaluationResponseDto;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +32,17 @@ public class CourseService {
 
     private static final CourseDtoMapper mapper = Mappers.getMapper(CourseDtoMapper.class);
     private static final EvaluationDtoMapper evaluationMapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final SmallEvaluationResponseMapper smallEvaluationMapper =
+            Mappers.getMapper(SmallEvaluationResponseMapper.class);
     private final CourseRepository courseRepository;
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
 
-    public CourseService(CourseRepository courseRepository, SemesterRepository semesterRepository, EvaluationRepository evaluationRepository) {
+    public CourseService(
+            CourseRepository courseRepository,
+            SemesterRepository semesterRepository,
+            EvaluationRepository evaluationRepository
+    ) {
         this.courseRepository = courseRepository;
         this.semesterRepository = semesterRepository;
         this.evaluationRepository = evaluationRepository;
@@ -147,7 +158,7 @@ public class CourseService {
 
     public CourseResponseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        course.setDates(getDatesBetween(course.getSemester().getStartDate(),course.getSemester().getEndDate(),course.getWeekday(),course.getInterval()));
+        course.setDates(getDatesBetween(course.getSemester().getStartDate(), course.getSemester().getEndDate(), course.getWeekday(), course.getInterval()));
         return mapper.entityToDto(course);
     }
 
@@ -156,8 +167,17 @@ public class CourseService {
         return optionalCourse.map(course -> course.getLecturer().getLecturerId()).orElseThrow();
     }
 
-    public List<EvaluationResponseDto> loadEvaluationByCourseId(Long id) {
+    public List<SmallEvaluationResponseDto> getEvaluationsByCourseId(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        return evaluationRepository.findByCourseOrderByDateDesc(course).stream().map(evaluationMapper::entityToDto).collect(Collectors.toList());
+        return evaluationRepository
+                .findByCourseOrderByDateDesc(course)
+                .stream()
+                .map(smallEvaluationMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public EvaluationResponseDto getNewestEvaluationByCourseId(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow();
+        return evaluationMapper.entityToDto(evaluationRepository.findFirstByCourseOrderByDateDesc(course));
     }
 }
