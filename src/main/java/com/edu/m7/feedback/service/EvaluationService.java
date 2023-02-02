@@ -1,6 +1,7 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.dto.AnswerDto;
+import com.edu.m7.feedback.payload.QuestionResponseDtoMapper;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
 import com.edu.m7.feedback.model.entity.Course;
@@ -9,6 +10,7 @@ import com.edu.m7.feedback.model.entity.Question;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
 import com.edu.m7.feedback.model.repository.CourseRepository;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
+import com.edu.m7.feedback.payload.response.QuestionResponseDto;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,8 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluationService {
 
-    private static final EvaluationDtoMapper mapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final EvaluationDtoMapper evaluationMapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final QuestionResponseDtoMapper questionMapper = Mappers.getMapper(QuestionResponseDtoMapper.class);
 
     private final CourseRepository courseRepository;
     private final EvaluationRepository repository;
@@ -34,7 +37,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto loadEvaluationById(Long id) throws UsernameNotFoundException {
-        return mapper.entityToDto(repository.findById(id).orElseThrow());
+        return evaluationMapper.entityToDto(repository.findById(id).orElseThrow());
     }
 
     public Long getLecturerIdByEvaluationId(Long id) {
@@ -43,7 +46,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto loadEvaluationResultByParticipant(Long id, Long participantId) {
-        EvaluationResponseDto evaluation = mapper.entityToDto(repository.findById(id).orElseThrow());
+        EvaluationResponseDto evaluation = evaluationMapper.entityToDto(repository.findById(id).orElseThrow());
         for (QuestionDto question : evaluation.getQuestions()) {
             Set<AnswerDto> participantAnswer = question
                     .getAnswers()
@@ -74,6 +77,17 @@ public class EvaluationService {
     }
     public EvaluationResponseDto getEvaluationByShortcode(Integer shortcode) {
        Evaluation evaluation = repository.findEvaluationByShortcode(shortcode);
-       return mapper.entityToDto(evaluation);
+       return evaluationMapper.entityToDto(evaluation);
+    }
+
+    public List<QuestionResponseDto> getQuestions(Integer shortCode){
+        Evaluation evaluation = repository.findEvaluationByShortcode(shortCode);
+        if(evaluation == null){
+            throw new NoSuchElementException("Evaluation not found by shortcode");
+        }
+        return evaluation.getQuestions()
+                .stream()
+                .map(questionMapper::map)
+                .collect(Collectors.toList());
     }
 }
