@@ -48,7 +48,11 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/auth/**",
+                        "/live-feedback/**", "/live-feedback",
+                        "/queue/**", "/queue",
+                        "/topic/**", "/topic")
+                .permitAll()
                 .anyRequest().authenticated().and()
                 .authenticationProvider(getAuthenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
