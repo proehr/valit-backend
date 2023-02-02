@@ -183,11 +183,6 @@ public class CourseController {
         }
         QrCodeResponse qrCodeResponse = new QrCodeResponse(image,shortcode);
         return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK );
-        /*return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"image.png")
-                .header("Shortcode",  evaluation.getShortcode().toString() )
-                .contentType(MediaType.IMAGE_PNG)
-                .body(image);*/
     }
 }
 
