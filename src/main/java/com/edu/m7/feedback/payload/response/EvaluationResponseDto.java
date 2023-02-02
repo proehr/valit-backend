@@ -1,6 +1,7 @@
-package com.edu.m7.feedback.model.dto;
+package com.edu.m7.feedback.payload.response;
 
 import com.edu.m7.feedback.model.EvaluationType;
+import com.edu.m7.feedback.model.dto.QuestionDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,9 +12,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EvaluationDto {
+public class EvaluationResponseDto {
 
     private Long id;
+    private Integer shortcode;
     private Long course;
     private EvaluationType type;
     private String title;

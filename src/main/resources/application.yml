@@ -12,6 +12,8 @@ valit:
   app:
     jwtSecret: g4PtQBzI5tN0c8bpD2xu
     jwtExpirationMs: 86400000
+    files:
+      directory: /db/file-storage
 
 ---
 
