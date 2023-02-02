@@ -15,11 +15,13 @@ import java.time.LocalDate;
 public interface CourseDtoMapper {
 
     @Mapping(target = "semester", ignore = true)
+    @Mapping(target = "evaluations", ignore = true)
     Course dtoToEntity(CourseRequestDto dto);
 
     CourseResponseDto entityToDto(Course entity);
 
     @Mapping(target = "semester", ignore = true)
+    @Mapping(target = "evaluations", ignore = true)
     Course updateEntityFromDto(CourseRequestDto dto, @MappingTarget Course course);
 
     default LocalDate dateEntityToLocalDate(Date date){

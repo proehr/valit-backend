@@ -47,10 +47,15 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
-        http.authenticationProvider(getAuthenticationProvider());
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .authorizeRequests()
+                .antMatchers("/api/auth/**",
+                        "/live-feedback/**", "/live-feedback",
+                        "/queue/**", "/queue",
+                        "/topic/**", "/topic")
+                .permitAll()
+                .anyRequest().authenticated().and()
+                .authenticationProvider(getAuthenticationProvider())
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
