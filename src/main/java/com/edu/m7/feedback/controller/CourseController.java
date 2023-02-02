@@ -6,6 +6,7 @@ import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.MessageResponse;
+import com.edu.m7.feedback.payload.response.QrCodeResponse;
 import com.edu.m7.feedback.service.CourseService;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
@@ -165,34 +166,29 @@ public class CourseController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/{id}/qr-code")
-    ResponseEntity<byte[]> getQRCodeForEvaluation(@PathVariable Long id, Principal principal) {
+    ResponseEntity<QrCodeResponse> getQRCodeForEvaluation(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
         EvaluationResponseDto evaluation = courseService.loadEvaluationByCourseId(id).get(0);
-
-        String code = evaluation.getShortcode().toString();
-
-
+        Integer shortcode =  evaluation.getShortcode();
+        String stringShortCode = shortcode.toString();
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array
-            image = QRCodeGenerator.getQRCodeImage(code,250,250);
-
+            image = QRCodeGenerator.getQRCodeImage(stringShortCode,250,250);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
         }
-
-
-        return ResponseEntity.status(HttpStatus.OK)
+        QrCodeResponse qrCodeResponse = new QrCodeResponse(image,shortcode);
+        return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK );
+        /*return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"image.png")
                 .header("Shortcode",  evaluation.getShortcode().toString() )
                 .contentType(MediaType.IMAGE_PNG)
-                .body(image);
-
+                .body(image);*/
     }
-
 }
 
 
