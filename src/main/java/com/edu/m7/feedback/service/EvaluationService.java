@@ -1,7 +1,9 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.dto.AnswerDto;
+import com.edu.m7.feedback.model.mapping.EvaluationHeaderResponseMapper;
 import com.edu.m7.feedback.payload.QuestionResponseDtoMapper;
+import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
 import com.edu.m7.feedback.model.entity.Evaluation;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 public class EvaluationService {
 
     private static final EvaluationDtoMapper evaluationMapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final EvaluationHeaderResponseMapper EvaluationHeaderMapper = Mappers.getMapper(EvaluationHeaderResponseMapper.class);
+
     private static final QuestionResponseDtoMapper questionMapper = Mappers.getMapper(QuestionResponseDtoMapper.class);
     private final EvaluationRepository evaluationRepository;
 
@@ -32,7 +36,11 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto loadEvaluationById(Long id) throws UsernameNotFoundException {
-        return evaluationMapper.entityToDto(evaluationRepository.findById(id).orElseThrow());
+        return evaluationMapper.map(evaluationRepository.findById(id).orElseThrow());
+    }
+
+    public EvaluationHeaderResponse loadSmallEvaluationById(Long id) throws UsernameNotFoundException {
+        return EvaluationHeaderMapper.map(evaluationRepository.findById(id).orElseThrow());
     }
 
     public Long getLecturerIdByEvaluationId(Long id) {
@@ -72,7 +80,7 @@ public class EvaluationService {
     }
     public EvaluationResponseDto getEvaluationByShortcode(Integer shortcode) {
        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode);
-       return evaluationMapper.entityToDto(evaluation);
+       return evaluationMapper.map(evaluation);
     }
 
     public List<QuestionResponseDto> getQuestions(Integer shortCode){
