@@ -8,7 +8,7 @@ stages:
 
 test:
   stage: test
-  script: "mvn test"
+  script: "mvn test -Dspring.profiles.active=test"
 
 deploy:
   stage: deploy

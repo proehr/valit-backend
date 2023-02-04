@@ -39,7 +39,7 @@ public class EvaluationController {
     ResponseEntity<EvaluationResponseDto> getEvaluation(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.ok(evaluationService.loadEvaluationById(id));
     }
