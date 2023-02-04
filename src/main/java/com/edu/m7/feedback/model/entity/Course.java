@@ -41,6 +41,10 @@ public class Course {
     @Setter
     private String degree;
 
+    @Setter
+    @Column(name = "program")
+    private String program;
+
     @Column(name = "time_start")
     @Setter
     private LocalTime timeStart;
