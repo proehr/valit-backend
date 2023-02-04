@@ -2,6 +2,7 @@ package com.edu.m7.feedback.controller;
 
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.QuestionResponseDto;
+import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +92,13 @@ public class EvaluationController {
         }
 
     }
-
-
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/{id}/header")
+    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(@PathVariable Long id, Principal principal) {
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return ResponseEntity.ok(evaluationService.loadSmallEvaluationById(id));
+    }
 }

@@ -60,4 +60,11 @@ public interface EvaluationDtoMapper {
     default Long accountToId(Account account) {
         return account.getAccountId();
     }
+
+    @Mapping(target = "participants", source = "questions")
+    EvaluationResponseDto map(Evaluation evaluation);
+
+    default int questionsToParticipantCount(Iterable<Question> questions){
+        return questions.iterator().next().getAnswers().size();
+    }
 }
