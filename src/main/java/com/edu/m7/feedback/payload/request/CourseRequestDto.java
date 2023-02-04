@@ -15,6 +15,7 @@ import java.time.LocalTime;
 public class CourseRequestDto {
     private String name;
     private String degree;
+    private String program;
     private LocalTime timeStart;
     private LocalTime timeEnd;
     private Integer studentCount;
