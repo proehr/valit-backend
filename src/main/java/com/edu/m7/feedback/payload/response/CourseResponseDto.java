@@ -20,6 +20,7 @@ public class CourseResponseDto {
     private Long id;
     private String name;
     private String degree;
+    private String program;
     private LocalTime timeStart;
     private LocalTime timeEnd;
     private Set<LocalDate> dates;
