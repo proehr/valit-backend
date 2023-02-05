@@ -48,7 +48,7 @@ public class EvaluationService {
         EvaluationHeaderResponse evaluationHeaderResponse = EvaluationHeaderMapper.map(evaluation);
         evaluationHeaderResponse.setCourseName(course.getName());
         String participants = String.valueOf(evaluation.getQuestions().iterator().next().getAnswers().size());
-        evaluationHeaderResponse.setParticipants(participants + "/" + course.getStudentCount());
+        evaluationHeaderResponse.setParticipants(participants + " / " + course.getStudentCount());
         return evaluationHeaderResponse;
     }
 
