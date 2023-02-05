@@ -1,6 +1,5 @@
 package com.edu.m7.feedback.controller;
 
-import com.edu.m7.feedback.model.entity.Evaluation;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -13,11 +12,8 @@ import com.edu.m7.feedback.service.LecturerService;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -150,7 +142,7 @@ public class CourseController {
        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
-        return ResponseEntity.ok(courseService.loadEvaluationByCourseId(id));
+        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(id));
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -160,7 +152,7 @@ public class CourseController {
          if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
-        return ResponseEntity.ok(courseService.loadEvaluationByCourseId(id).get(0));
+        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(id).get(0));
 
     }
 
@@ -171,7 +163,7 @@ public class CourseController {
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
-        EvaluationResponseDto evaluation = courseService.loadEvaluationByCourseId(id).get(0);
+        EvaluationResponseDto evaluation = courseService.loadEvaluationsByCourseId(id).get(0);
         Integer shortcode =  evaluation.getShortcode();
         String stringShortCode = shortcode.toString();
         byte[] image = new byte[0];
