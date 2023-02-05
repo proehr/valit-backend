@@ -15,5 +15,6 @@ public class EvaluationHeaderResponse {
     private EvaluationType type;
     private String title;
     private LocalDate date;
-    private int participants; //hier als String
+    private String participants;
+    private String courseName;
 }

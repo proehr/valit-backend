@@ -27,6 +27,7 @@ public class EvaluationController {
     private final EvaluationService evaluationService;
     private final LecturerService lecturerService;
 
+
     public EvaluationController(EvaluationService evaluationService, LecturerService lecturerService) {
         this.evaluationService = evaluationService;
         this.lecturerService = lecturerService;
@@ -93,12 +94,12 @@ public class EvaluationController {
 
     }
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @GetMapping("/{id}/header")
-    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(@PathVariable Long id, Principal principal) {
+    @GetMapping("{courseId}/{id}/header")
+    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(@PathVariable Long id, @PathVariable Long courseId,  Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(evaluationService.loadSmallEvaluationById(id));
+        return ResponseEntity.ok(evaluationService.loadEvaluationHeaderById(id, courseId));
     }
 }
