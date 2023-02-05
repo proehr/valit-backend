@@ -22,8 +22,7 @@ public class FileDataService {
         this.fileDataRepository = fileDataRepository;
     }
 
-    @Value("${valit.app.files.directory}")
-    public void setFolderPath(String folderPath) {
+    public void setFolderPath(@Value("${valit.app.files.directory}") String folderPath) {
         this.folderPath = folderPath;
         File directory = new File(folderPath);
         if (!directory.exists()) {
