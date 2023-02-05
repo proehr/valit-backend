@@ -156,8 +156,16 @@ public class CourseService {
         return optionalCourse.map(course -> course.getLecturer().getLecturerId()).orElseThrow();
     }
 
-    public List<EvaluationResponseDto> loadEvaluationByCourseId(Long id) {
+    public List<EvaluationResponseDto> loadEvaluationsByCourseId(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        return evaluationRepository.findByCourseOrderByDateDesc(course).stream().map(evaluationMapper::entityToDto).collect(Collectors.toList());
+        List<EvaluationResponseDto> evaluations = evaluationRepository.findByCourseOrderByDateDesc(course).stream().map(evaluationMapper::entityToDto).collect(Collectors.toList());
+        return evaluations.stream().map(dto -> {
+            if (dto.getQuestions().iterator().hasNext()) {
+                dto.setParticipants(dto.getQuestions().iterator().next().getAnswers().size());
+            } else {
+                dto.setParticipants(0);
+            }
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
