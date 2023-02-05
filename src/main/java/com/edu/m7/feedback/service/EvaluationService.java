@@ -1,7 +1,11 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.dto.AnswerDto;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.mapping.EvaluationHeaderResponseMapper;
 import com.edu.m7.feedback.payload.QuestionResponseDtoMapper;
+import com.edu.m7.feedback.payload.response.CourseResponseDto;
+import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
 import com.edu.m7.feedback.model.entity.Evaluation;
@@ -24,15 +28,28 @@ import java.util.stream.Collectors;
 public class EvaluationService {
 
     private static final EvaluationDtoMapper evaluationMapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final EvaluationHeaderResponseMapper EvaluationHeaderMapper = Mappers.getMapper(EvaluationHeaderResponseMapper.class);
     private static final QuestionResponseDtoMapper questionMapper = Mappers.getMapper(QuestionResponseDtoMapper.class);
     private final EvaluationRepository evaluationRepository;
+    private final CourseService courseService;
 
-    public EvaluationService(EvaluationRepository evaluationRepository) {
+    public EvaluationService(EvaluationRepository evaluationRepository, CourseService courseService) {
         this.evaluationRepository = evaluationRepository;
+        this.courseService = courseService;
     }
 
     public EvaluationResponseDto loadEvaluationById(Long id) throws UsernameNotFoundException {
-        return evaluationMapper.entityToDto(evaluationRepository.findById(id).orElseThrow());
+        return evaluationMapper.map(evaluationRepository.findById(id).orElseThrow());
+    }
+
+    public EvaluationHeaderResponse loadEvaluationHeaderById(Long id, Long courseId) throws UsernameNotFoundException {
+        Evaluation evaluation = evaluationRepository.findById(id).orElseThrow();
+        CourseResponseDto course = courseService.getCourseById(courseId);
+        EvaluationHeaderResponse evaluationHeaderResponse = EvaluationHeaderMapper.map(evaluation);
+        evaluationHeaderResponse.setCourseName(course.getName());
+        String participants = String.valueOf(evaluation.getQuestions().iterator().next().getAnswers().size());
+        evaluationHeaderResponse.setParticipants(participants + "/" + course.getStudentCount());
+        return evaluationHeaderResponse;
     }
 
     public Long getLecturerIdByEvaluationId(Long id) {
@@ -72,7 +89,7 @@ public class EvaluationService {
     }
     public EvaluationResponseDto getEvaluationByShortcode(Integer shortcode) {
        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode);
-       return evaluationMapper.entityToDto(evaluation);
+       return evaluationMapper.map(evaluation);
     }
 
     public List<QuestionResponseDto> getQuestions(Integer shortCode){
