@@ -66,7 +66,8 @@ public class CourseController {
     @GetMapping("/{id}")
     ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
+        Long courseLecturerId = courseService.getLecturerByCourseId(id);
+        if (!courseLecturerId.equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
         return ResponseEntity.ok(courseService.getCourseById(id));
