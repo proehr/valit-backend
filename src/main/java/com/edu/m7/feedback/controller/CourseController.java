@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -66,7 +67,8 @@ public class CourseController {
     @GetMapping("/{id}")
     ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
+        Long courseLecturerId = courseService.getLecturerByCourseId(id);
+        if (!courseLecturerId.equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
         return ResponseEntity.ok(courseService.getCourseById(id));
