@@ -43,7 +43,13 @@ public class EvaluationController {
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(evaluationService.loadEvaluationById(id));
+        try {
+            EvaluationResponseDto evaluationResponseDto = evaluationService.loadEvaluationById(id);
+            return ResponseEntity.ok(evaluationResponseDto);
+        }catch (NoSuchElementException e){
+            log.info("Could not find evaluation ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
