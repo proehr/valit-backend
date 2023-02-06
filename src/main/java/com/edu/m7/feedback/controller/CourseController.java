@@ -1,6 +1,5 @@
 package com.edu.m7.feedback.controller;
 
-import com.edu.m7.feedback.model.entity.Course;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
