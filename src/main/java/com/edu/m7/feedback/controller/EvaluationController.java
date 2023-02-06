@@ -6,6 +6,7 @@ import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -106,6 +107,12 @@ public class EvaluationController {
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(evaluationService.loadEvaluationHeaderById(id, courseId));
+        try{
+            EvaluationHeaderResponse evaluationHeaderResponse = evaluationService.loadEvaluationHeaderById(id, courseId);
+            return ResponseEntity.ok(evaluationHeaderResponse);
+        }catch (NoSuchElementException e){
+            log.info("Could not find evaluation header ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
