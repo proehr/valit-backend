@@ -60,6 +60,23 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/next-three")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
+    ResponseEntity<List<CourseResponseDto>> getUpcomingCourses(Principal principal){
+        //get the current lecturer
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+
+        //get the next three courses
+        List<CourseResponseDto> coursesDto = courseService.getNextThreeCourses(lecturer);
+
+
+        if (coursesDto != null) {
+            return new ResponseEntity<>(coursesDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/{courseId}")
     ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long courseId, Principal principal) {
@@ -78,7 +95,6 @@ public class CourseController {
             @RequestBody CourseRequestDto courseDto,
             Principal principal
     ) {
-
         Lecturer lecturer = lecturerService.getLecturer(principal);
         CourseResponseDto savedCourse = courseService.createCourse(courseDto, lecturer);
 
