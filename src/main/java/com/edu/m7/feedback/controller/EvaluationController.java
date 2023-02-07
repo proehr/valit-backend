@@ -34,7 +34,7 @@ public class EvaluationController {
     private final EvaluationService evaluationService;
     private final LecturerService lecturerService;
     private final QuestionService questionService;
-    private final AccountService  accountService;
+    private final AccountService accountService;
 
 
     public EvaluationController(
@@ -58,7 +58,13 @@ public class EvaluationController {
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(evaluationService.loadEvaluationById(id));
+        try {
+            EvaluationResponseDto evaluationResponseDto = evaluationService.loadEvaluationById(id);
+            return ResponseEntity.ok(evaluationResponseDto);
+        } catch (NoSuchElementException e) {
+            log.info("Could not find evaluation ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -120,7 +126,14 @@ public class EvaluationController {
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(evaluationService.loadEvaluationHeaderById(id, courseId));
+        try {
+            EvaluationHeaderResponse evaluationHeaderResponse =
+                    evaluationService.loadEvaluationHeaderById(id, courseId);
+            return ResponseEntity.ok(evaluationHeaderResponse);
+        } catch (NoSuchElementException e) {
+            log.info("Could not find evaluation header", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -134,15 +147,16 @@ public class EvaluationController {
         if (!evaluationService.getLecturerIdByEvaluationId(evaluationId).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        try{
+        try {
             EvaluationResponseDto evaluationResponseDto = evaluationService.updateTitle(evaluationId, newTitle);
             return ResponseEntity.ok(evaluationResponseDto);
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             log.info(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
+
     @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
     @PostMapping("/{shortcode}/post-answers")
         //post answers for evaluation
@@ -159,7 +173,7 @@ public class EvaluationController {
         List<Long> participants = evaluationService.getParticipants(evaluation.getId());
         //check if student already sent answer for evaluation
         Account account = accountService.findByUsername(principal.getName());
-        if(participants.contains(account.getAccountId())) {
+        if (participants.contains(account.getAccountId())) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         }
         evaluationService.postAnswers(postAnswerRequests, account);
