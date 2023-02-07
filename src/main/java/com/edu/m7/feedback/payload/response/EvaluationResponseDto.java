@@ -15,7 +15,7 @@ import java.util.Set;
 public class EvaluationResponseDto {
 
     private Long id;
-    private Integer shortcode;
+    private String shortcode;
     private Long course;
     private EvaluationType type;
     private String title;

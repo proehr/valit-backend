@@ -1,0 +1,548 @@
+[
+  {
+    "questionKey": "semester_overallCourseRating",
+    "questionPosition": 0,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryBad",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_bad",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_good",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryGood",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_workDifficulty",
+    "questionPosition": 1,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryHard",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_hard",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_easy",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryEasy",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_learningProcess",
+    "questionPosition": 2,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryBad",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_bad",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_good",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryGood",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_courseImprovements",
+    "questionPosition": 3,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "semester_likedAboutCourse",
+    "questionPosition": 4,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "semester_courseMaterials",
+    "questionPosition": 5,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryUseless",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_useless",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_useful",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryUseful",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_topicsOverview",
+    "questionPosition": 0,
+    "sectionNumber": 1,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_solveProblems",
+    "questionPosition": 1,
+    "sectionNumber": 1,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_moreInterest",
+    "questionPosition": 2,
+    "sectionNumber": 1,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_homeworkAssignments",
+    "questionPosition": 3,
+    "sectionNumber": 1,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryUnhelpful",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_unhelpful",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_helpful",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryHelpful",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_explainedLearning",
+    "questionPosition": 0,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_previousKnowledge",
+    "questionPosition": 1,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_interactiveLecture",
+    "questionPosition": 2,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_assistanceHelpful",
+    "questionPosition": 3,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_groupExercises",
+    "questionPosition": 4,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_stronglyDisagree",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_disagree",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_agree",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_stronglyAgree",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_approachableInstructor",
+    "questionPosition": 5,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_veryDifficult",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_difficult",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_easy",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_veryEasy",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_instructionSpeed",
+    "questionPosition": 6,
+    "sectionNumber": 2,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_wayTooFast",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_tooFast",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_justRight",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_tooSlow",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_wayToSlow",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_anythingElse",
+    "questionPosition": 7,
+    "sectionNumber": 2,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "semester_courseAttended",
+    "questionPosition": 0,
+    "sectionNumber": 3,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_never",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_rarely",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_sometimes",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_often",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_always",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_genderIdentification",
+    "questionPosition": 1,
+    "sectionNumber": 3,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_male",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_female",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_diverse",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_notSpecified",
+        "choiceValue": 3
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_besideWork",
+    "questionPosition": 2,
+    "sectionNumber": 3,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_notAtAll",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_lessThanTen",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_tenToTwenty",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_moreThanTwenty",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_notSpecified",
+        "choiceValue": 4
+      }
+    ]
+  },
+  {
+    "questionKey": "semester_coursesAmount",
+    "questionPosition": 3,
+    "sectionNumber": 3,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_onlyThis",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_twoCourses",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_threeCourses",
+        "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice_moreThanThreeCourses",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice_notSpecified",
+        "choiceValue": 4
+      }
+    ]
+  }
+]
