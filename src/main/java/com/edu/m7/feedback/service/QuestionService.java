@@ -1,9 +1,11 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.EvaluationType;
+import com.edu.m7.feedback.model.dto.QuestionChoiceDto;
 import com.edu.m7.feedback.model.entity.ChoiceQuestion;
 import com.edu.m7.feedback.model.entity.Evaluation;
 import com.edu.m7.feedback.model.entity.Question;
+import com.edu.m7.feedback.model.entity.QuestionChoice;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
 import com.edu.m7.feedback.model.repository.QuestionChoiceRepository;
 import com.edu.m7.feedback.model.repository.QuestionRepository;
@@ -70,32 +72,34 @@ public class QuestionService {
                 throw new IllegalStateException("Unexpected value: " + evaluationType);
         }
 
+        QuestionRequestDto[] questionDtos;
         try {
-            QuestionRequestDto[] questionDtos = objectMapper.readValue(questionsJson, QuestionRequestDto[].class);
-            for (QuestionRequestDto questionRequestDto : questionDtos) {
-                Question question;
-                switch (questionRequestDto.getQuestionType()) {
-                    case TEXT:
-                        question = questionMapper.mapToTextQuestion(questionRequestDto);
-                        break;
-                    case SCALE:
-                        question = questionMapper.mapToChoiceQuestion(questionRequestDto);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + questionRequestDto.getQuestionType());
-                }
-                question.setEvaluation(evaluation);
-                questionRepository.save(question);
-                if (question instanceof ChoiceQuestion) {
-                    questionChoiceRepository.saveAll(Arrays
-                            .stream(questionRequestDto.getQuestionChoices())
-                            .map(questionMapper::mapToQuestionChoice)
-                            .collect(Collectors.toSet())
-                    );
-                }
-            }
+            questionDtos = objectMapper.readValue(questionsJson, QuestionRequestDto[].class);
         } catch (IOException e) {
             log.error("Could not read template questions from file", e);
+            throw new IllegalStateException("JSON template for questions could not be parsed");
+        }
+        for (QuestionRequestDto questionRequestDto : questionDtos) {
+            Question question;
+            switch (questionRequestDto.getQuestionType()) {
+                case TEXT:
+                    question = questionMapper.mapToTextQuestion(questionRequestDto);
+                    break;
+                case CHOICE:
+                    question = questionMapper.mapToChoiceQuestion(questionRequestDto);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + questionRequestDto.getQuestionType());
+            }
+            question.setEvaluation(evaluation);
+            questionRepository.save(question);
+            if (question instanceof ChoiceQuestion) {
+                for (QuestionChoiceDto choiceDto : questionRequestDto.getQuestionChoices()) {
+                    QuestionChoice questionChoice = questionMapper.mapToQuestionChoice(choiceDto);
+                    questionChoice.setQuestion((ChoiceQuestion) question);
+                    questionChoiceRepository.save(questionChoice);
+                }
+            }
         }
     }
 }
