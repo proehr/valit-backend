@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.model.entity;
 
+import com.edu.m7.feedback.model.DegreeType;
 import com.edu.m7.feedback.model.IntervalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,8 +40,9 @@ public class Course {
     private String name;
 
     @Column(name = "degree")
+    @Enumerated(EnumType.STRING)
     @Setter
-    private String degree;
+    private DegreeType degree;
 
     @Setter
     @Column(name = "program")
