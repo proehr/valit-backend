@@ -2,10 +2,10 @@ package com.edu.m7.feedback.controller;
 
 import com.edu.m7.feedback.model.entity.Account;
 import com.edu.m7.feedback.payload.request.PostAnswerRequest;
+import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.MessageResponse;
-import com.edu.m7.feedback.payload.response.QuestionResponseDto;
-import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
+import com.edu.m7.feedback.payload.response.StudentEvaluationResponse;
 import com.edu.m7.feedback.service.AccountService;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
@@ -99,10 +98,10 @@ public class EvaluationController {
 
     @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
     @GetMapping("/{shortCode}/questions")
-    ResponseEntity<List<QuestionResponseDto>> getQuestions(@PathVariable String shortCode) {
+    ResponseEntity<StudentEvaluationResponse> getQuestions(@PathVariable String shortCode) {
         try {
-            List<QuestionResponseDto> questions = questionService.getQuestionsByEvaluationShortCode(shortCode);
-            return ResponseEntity.ok(questions);
+            StudentEvaluationResponse response = questionService.getQuestionsByEvaluationShortCode(shortCode);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             log.info(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
