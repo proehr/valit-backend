@@ -124,4 +124,10 @@ public class EvaluationService {
         questionService.generateQuestions(evaluationType, evaluation);
     }
 
+    public EvaluationResponseDto updateTitle(Long evaluationId, String newTitle) {
+        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow();
+        evaluation.setTitle(newTitle);
+        evaluationRepository.save(evaluation);
+        return evaluationMapper.entityToDto(evaluation);
+    }
 }
