@@ -43,7 +43,7 @@ public class WebsocketController {
     @RolesAllowed("ROLE_STUDENT")
     public ResponseEntity<MessageResponse> sendFeedback(
             @RequestBody LiveFeedbackMessage message,
-            @PathVariable Integer shortCode,
+            @PathVariable String shortCode,
             Principal principal
     ) {
         Long account = accountService.getAccountIdByUsername(principal.getName());
