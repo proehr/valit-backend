@@ -1,8 +1,12 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.payload.request.PostAnswerRequest;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
+import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.payload.response.QuestionResponseDto;
 import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
+import com.edu.m7.feedback.service.AccountService;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import com.edu.m7.feedback.service.QuestionService;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
@@ -30,16 +35,18 @@ public class EvaluationController {
     private final EvaluationService evaluationService;
     private final LecturerService lecturerService;
     private final QuestionService questionService;
+    private final AccountService  accountService;
 
 
     public EvaluationController(
             EvaluationService evaluationService,
             LecturerService lecturerService,
-            QuestionService questionService
-    ) {
+            QuestionService questionService,
+            AccountService accountService) {
         this.evaluationService = evaluationService;
         this.lecturerService = lecturerService;
         this.questionService = questionService;
+        this.accountService = accountService;
     }
 
     //Get questions for Student
@@ -136,5 +143,27 @@ public class EvaluationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+    }
+    @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
+    @PostMapping("/{shortcode}/post-answers")
+        //post answers for evaluation
+    ResponseEntity<MessageResponse> postAnswers(@PathVariable String shortcode, @RequestBody List<PostAnswerRequest> postAnswerRequests, Principal principal) {
+        //Check if evaluation exists
+        EvaluationResponseDto evaluation;
+        try {
+            evaluation = evaluationService.getEvaluationByShortcode(shortcode);
+        } catch (NoSuchElementException e) {
+            log.info(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<Long> participants = evaluationService.getParticipants(evaluation.getId());
+        //check if student already sent answer for evaluation
+        Account account = accountService.findByUsername(principal.getName());
+        if(participants.contains(account.getAccountId())) {
+            return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
+        }
+        evaluationService.postAnswers(postAnswerRequests, account);
+        return ResponseEntity.ok(new MessageResponse("Answers sent!"));
     }
 }
