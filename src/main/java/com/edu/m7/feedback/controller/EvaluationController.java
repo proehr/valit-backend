@@ -6,7 +6,6 @@ import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,7 +46,7 @@ public class EvaluationController {
         try {
             EvaluationResponseDto evaluationResponseDto = evaluationService.loadEvaluationById(id);
             return ResponseEntity.ok(evaluationResponseDto);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             log.info("Could not find evaluation ", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -91,26 +90,32 @@ public class EvaluationController {
     @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
     @GetMapping("/{shortCode}/questions")
     ResponseEntity<List<QuestionResponseDto>> getQuestions(@PathVariable Integer shortCode) {
-        try{
+        try {
             List<QuestionResponseDto> questions = evaluationService.getQuestions(shortCode);
             return ResponseEntity.ok(questions);
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             log.info(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
+
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("{courseId}/{id}/header")
-    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(@PathVariable Long id, @PathVariable Long courseId,  Principal principal) {
+    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(
+            @PathVariable Long id,
+            @PathVariable Long courseId,
+            Principal principal
+    ) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        try{
-            EvaluationHeaderResponse evaluationHeaderResponse = evaluationService.loadEvaluationHeaderById(id, courseId);
+        try {
+            EvaluationHeaderResponse evaluationHeaderResponse =
+                    evaluationService.loadEvaluationHeaderById(id, courseId);
             return ResponseEntity.ok(evaluationHeaderResponse);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             log.info("Could not find evaluation header", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
