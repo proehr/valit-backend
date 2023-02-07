@@ -13,7 +13,7 @@ public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer 
     // this is the endpoint you connect to if you want to access any messages
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/live-feedback").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/live-feedback").setAllowedOrigins("*");
     }
 
     @Override

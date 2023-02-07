@@ -24,8 +24,8 @@ public class JwtUtils {
     @Value("${valit.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${valit.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    @Value("${valit.app.jwtExpirationDays}")
+    private int jwtExpirationDays;
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -34,7 +34,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(jwtExpirationMs, ChronoUnit.MILLIS)))
+                .setExpiration(Date.from(Instant.now().plus(jwtExpirationDays, ChronoUnit.DAYS)))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
