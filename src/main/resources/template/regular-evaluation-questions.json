@@ -1,0 +1,58 @@
+[
+  {
+    "questionKey": "recurrent.likedCourseToday",
+    "questionPosition": 0,
+    "sectionNumber": 0,
+    "questionType": "CHOICE",
+    "visualizationType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice.good",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice.neutral",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice.bad",
+        "choiceValue": 2
+      }
+    ]
+  },
+  {
+    "questionKey": "recurrent.likeOrNotLike",
+    "questionPosition": 1,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent.learnedToday",
+    "questionPosition": 2,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent.suggestionsImprovement",
+    "questionPosition": 3,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent.spendFreetime",
+    "questionPosition": 4,
+    "sectionNumber": 0,
+    "questionType": "CHOICE",
+    "visualizationType": "PIE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice.yes",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice.no",
+        "choiceValue": 1
+      }
+    ]
+  }
+]
