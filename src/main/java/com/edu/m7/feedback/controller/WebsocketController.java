@@ -9,13 +9,15 @@ import com.edu.m7.feedback.service.LecturerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 
-@Controller
 @CrossOrigin
 @RestController
 public class WebsocketController {
@@ -52,7 +54,7 @@ public class WebsocketController {
 
     @PostMapping("/live/{shortCode}/reset-survey")
     @RolesAllowed("ROLE_LECTURER")
-    public ResponseEntity<MessageResponse> resetSurvey(@PathVariable Integer shortCode, Principal principal) {
+    public ResponseEntity<MessageResponse> resetSurvey(@PathVariable String shortCode, Principal principal) {
         EvaluationResponseDto evaluationResponseDto = evaluationService.getEvaluationByShortcode(shortCode);
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(evaluationResponseDto.getId()).equals(lecturerId)) {

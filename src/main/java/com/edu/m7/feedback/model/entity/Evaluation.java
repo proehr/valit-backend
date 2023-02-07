@@ -34,7 +34,11 @@ public class Evaluation {
 
     @Setter
     @Column(name = "shortcode")
-    private Integer shortcode;
+    private String shortcode;
+
+    @Setter
+    @Column(name = "active")
+    private boolean active;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,0 +1,56 @@
+[
+  {
+    "questionKey": "recurrent_likedCourseToday",
+    "questionPosition": 0,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_good",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_neutral",
+        "choiceValue": 1
+      },
+      {
+        "choiceKey": "choice_bad",
+        "choiceValue": 2
+      }
+    ]
+  },
+  {
+    "questionKey": "recurrent_likeOrNotLike",
+    "questionPosition": 1,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent_learnedToday",
+    "questionPosition": 2,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent_suggestionsImprovement",
+    "questionPosition": 3,
+    "sectionNumber": 0,
+    "questionType": "TEXT"
+  },
+  {
+    "questionKey": "recurrent_spendFreetime",
+    "questionPosition": 4,
+    "sectionNumber": 0,
+    "questionType": "SCALE",
+    "questionChoices": [
+      {
+        "choiceKey": "choice_yes",
+        "choiceValue": 0
+      },
+      {
+        "choiceKey": "choice_no",
+        "choiceValue": 1
+      }
+    ]
+  }
+]
