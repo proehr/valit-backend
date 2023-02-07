@@ -49,10 +49,7 @@ public class QuestionService {
     }
 
     public StudentEvaluationResponse getQuestionsByEvaluationShortCode(String shortCode) {
-        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortCode);
-        if (evaluation == null) {
-            throw new NoSuchElementException("Evaluation not found by shortcode");
-        }
+        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortCode).orElseThrow();
         StudentEvaluationResponse evaluationResponse = new StudentEvaluationResponse();
         evaluationResponse.setQuestions(evaluation.getQuestions()
                 .stream()
