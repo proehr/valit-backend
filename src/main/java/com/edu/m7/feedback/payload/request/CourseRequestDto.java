@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.payload.request;
 
+import com.edu.m7.feedback.model.DegreeType;
 import com.edu.m7.feedback.model.IntervalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class CourseRequestDto {
     private String name;
-    private String degree;
+    private DegreeType degree;
     private String program;
     private LocalTime timeStart;
     private LocalTime timeEnd;
