@@ -1,9 +1,13 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.IntervalType;
-import com.edu.m7.feedback.model.entity.*;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Date;
+import com.edu.m7.feedback.model.entity.Lecturer;
+import com.edu.m7.feedback.model.entity.Semester;
 import com.edu.m7.feedback.model.mapping.CourseDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
+import com.edu.m7.feedback.model.repository.DateRepository;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
 import com.edu.m7.feedback.model.repository.SemesterRepository;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
@@ -30,15 +34,26 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
+    private final DateRepository dateRepository;
 
-    public CourseService(CourseRepository courseRepository, SemesterRepository semesterRepository, EvaluationRepository evaluationRepository) {
+    public CourseService(
+            CourseRepository courseRepository,
+            SemesterRepository semesterRepository,
+            EvaluationRepository evaluationRepository,
+            DateRepository dateRepository
+    ) {
         this.courseRepository = courseRepository;
         this.semesterRepository = semesterRepository;
         this.evaluationRepository = evaluationRepository;
+        this.dateRepository = dateRepository;
     }
 
-    public static Set<Date> getDatesBetween(
-            LocalDate startDate, LocalDate endDate, DayOfWeek dayOfWeek, IntervalType interval) {
+    public Set<Date> getDatesBetween(
+            LocalDate startDate,
+            LocalDate endDate,
+            DayOfWeek dayOfWeek,
+            IntervalType interval
+    ) {
         List<LocalDate> allDatesBetween = startDate.datesUntil(endDate)
                 .filter(date -> date.getDayOfWeek() == dayOfWeek)
                 .collect(Collectors.toList());
@@ -76,15 +91,6 @@ public class CourseService {
                 .findByLecturer(lecturer)
                 .stream()
                 .map(mapper::entityToDto)
-                .map((CourseResponseDto dto) -> {
-                    dto.setDates(getDatesBetween(
-                            dto.getSemester().getStartDate(),
-                            dto.getSemester().getEndDate(),
-                            dto.getWeekday(),
-                            dto.getInterval()).stream().map(mapper::dateEntityToLocalDate).collect(Collectors.toSet()
-                    ));
-                    return dto;
-                })
                 .collect(Collectors.toList());
     }
 
@@ -115,29 +121,39 @@ public class CourseService {
     public CourseResponseDto createCourse(CourseRequestDto courseDto, Lecturer lecturer) {
         Semester semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
         Course course = mapper.dtoToEntity(courseDto);
-        course.setDates(getDatesBetween(
+        course.setLecturer(lecturer);
+        course.setSemester(semester);
+        courseRepository.save(course);
+        getDatesBetween(
                 semester.getStartDate(),
                 semester.getEndDate(),
                 course.getWeekday(),
                 course.getInterval()
-        ));
-        course.setLecturer(lecturer);
-        course.setSemester(semester);
+        ).forEach((Date date) -> {
+            date.setCourse(course);
+            dateRepository.save(date);
+        });
         return mapper.entityToDto(courseRepository.save(course));
     }
 
     public CourseResponseDto updateCourse(Long id, CourseRequestDto courseDto) {
         Course course = courseRepository.findById(id).orElseThrow();
-        course = mapper.updateEntityFromDto(courseDto, course);
+        mapper.updateEntityFromDto(courseDto, course);
         Semester semester = semesterRepository.findById(courseDto.getSemester()).orElseThrow();
-        course.setDates(getDatesBetween(
+        course.setSemester(semester);
+        courseRepository.save(course);
+
+        dateRepository.deleteAll(course.getDates());
+        getDatesBetween(
                 semester.getStartDate(),
                 semester.getEndDate(),
                 course.getWeekday(),
-                course.getInterval())
-        );
-        course.setSemester(semester);
-        courseRepository.save(course);
+                course.getInterval()
+        ).forEach((Date date) -> {
+            date.setCourse(course);
+            dateRepository.save(date);
+        });
+
         return mapper.entityToDto(course);
     }
 
