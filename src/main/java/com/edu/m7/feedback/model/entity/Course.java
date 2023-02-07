@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -67,6 +68,7 @@ public class Course {
     private Lecturer lecturer;
 
     @OneToMany(mappedBy = "course")
+    @OrderBy("date desc")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
 
     @Enumerated(EnumType.STRING)

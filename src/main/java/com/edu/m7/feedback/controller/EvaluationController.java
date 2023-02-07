@@ -5,6 +5,7 @@ import com.edu.m7.feedback.payload.response.QuestionResponseDto;
 import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
+import com.edu.m7.feedback.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,17 @@ import java.util.NoSuchElementException;
 public class EvaluationController {
     private final EvaluationService evaluationService;
     private final LecturerService lecturerService;
+    private final QuestionService questionService;
 
 
-    public EvaluationController(EvaluationService evaluationService, LecturerService lecturerService) {
+    public EvaluationController(
+            EvaluationService evaluationService,
+            LecturerService lecturerService,
+            QuestionService questionService
+    ) {
         this.evaluationService = evaluationService;
         this.lecturerService = lecturerService;
+        this.questionService = questionService;
     }
 
     //Get questions for Student
@@ -83,23 +90,30 @@ public class EvaluationController {
 
     @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
     @GetMapping("/{shortCode}/questions")
-    ResponseEntity<List<QuestionResponseDto>> getQuestions(@PathVariable Integer shortCode) {
-        try{
-            List<QuestionResponseDto> questions = evaluationService.getQuestions(shortCode);
+    ResponseEntity<List<QuestionResponseDto>> getQuestions(@PathVariable String shortCode) {
+        try {
+            List<QuestionResponseDto> questions = questionService.getQuestionsByEvaluationShortCode(shortCode);
             return ResponseEntity.ok(questions);
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             log.info(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
+
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("{courseId}/{id}/header")
-    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(@PathVariable Long id, @PathVariable Long courseId,  Principal principal) {
+    ResponseEntity<EvaluationHeaderResponse> getEvaluationHeader(
+            @PathVariable Long id,
+            @PathVariable Long courseId,
+            Principal principal
+    ) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.ok(evaluationService.loadEvaluationHeaderById(id, courseId));
     }
+
+    //TODO: triggerEvaluationCreation manually
 }
