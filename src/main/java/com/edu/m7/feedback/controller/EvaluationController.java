@@ -13,6 +13,13 @@ import com.edu.m7.feedback.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -117,6 +124,26 @@ public class EvaluationController {
         return ResponseEntity.ok(evaluationService.loadEvaluationHeaderById(id, courseId));
     }
 
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @PostMapping("/{evaluationId}/update-title")
+    ResponseEntity<EvaluationResponseDto> updateEvaluationTitle(
+            @PathVariable Long evaluationId,
+            @RequestBody String newTitle,
+            Principal principal
+    ) {
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!evaluationService.getLecturerIdByEvaluationId(evaluationId).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        try{
+            EvaluationResponseDto evaluationResponseDto = evaluationService.updateTitle(evaluationId, newTitle);
+            return ResponseEntity.ok(evaluationResponseDto);
+        } catch (NoSuchElementException e){
+            log.info(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
     @RolesAllowed({"ROLE_STUDENT", "ROLE_ADMIN"})
     @PostMapping("/{shortcode}/post-answers")
         //post answers for evaluation

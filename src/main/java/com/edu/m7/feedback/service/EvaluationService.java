@@ -49,7 +49,8 @@ public class EvaluationService {
 
     public EvaluationService(
             EvaluationRepository evaluationRepository,
-            AnswerRepository answerRepository, CourseService courseService,
+            AnswerRepository answerRepository,
+            CourseService courseService,
             QuestionService questionService) {
         this.evaluationRepository = evaluationRepository;
         this.answerRepository = answerRepository;
@@ -131,6 +132,12 @@ public class EvaluationService {
         questionService.generateQuestions(evaluationType, evaluation);
     }
 
+    public EvaluationResponseDto updateTitle(Long evaluationId, String newTitle) {
+        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow();
+        evaluation.setTitle(newTitle);
+        evaluationRepository.save(evaluation);
+        return evaluationMapper.entityToDto(evaluation);
+    }
     public void postAnswers(List<PostAnswerRequest> postAnswerRequests, Account account) {
         for (PostAnswerRequest postAnswerRequest : postAnswerRequests) {
             Question question = questionService.getQuestionById(postAnswerRequest.getId());
