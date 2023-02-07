@@ -1,5 +1,6 @@
 package com.edu.m7.feedback.model.entity;
 
+import com.edu.m7.feedback.model.DegreeType;
 import com.edu.m7.feedback.model.IntervalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,8 +40,9 @@ public class Course {
     private String name;
 
     @Column(name = "degree")
+    @Enumerated(EnumType.STRING)
     @Setter
-    private String degree;
+    private DegreeType degree;
 
     @Setter
     @Column(name = "program")
@@ -67,6 +70,7 @@ public class Course {
     private Lecturer lecturer;
 
     @OneToMany(mappedBy = "course")
+    @OrderBy("date desc")
     private Set<Evaluation> evaluations = new LinkedHashSet<>();
 
     @Enumerated(EnumType.STRING)

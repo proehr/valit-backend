@@ -38,13 +38,11 @@ public class CourseController {
 
     private final CourseService courseService;
     private final LecturerService lecturerService;
-    private final EvaluationService evaluationService;
 
     @Autowired
-    public CourseController(CourseService courseService, LecturerService lecturerService, EvaluationService evaluationService) {
+    public CourseController(CourseService courseService, LecturerService lecturerService) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
-        this.evaluationService = evaluationService;
     }
 
     // retrieve all the courses of the currently logged in Lecturer
@@ -63,14 +61,16 @@ public class CourseController {
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @GetMapping("/{id}")
-    ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long id, Principal principal) {
+    @GetMapping("/{courseId}")
+    ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long courseId, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
+        Long courseLecturerId = courseService.getLecturerByCourseId(courseId);
+        if (!courseLecturerId.equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
         }
-        return ResponseEntity.ok(courseService.getCourseById(id));
+        return ResponseEntity.ok(courseService.getCourseById(courseId));
     }
+
     // Create a new Course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping
@@ -91,19 +91,19 @@ public class CourseController {
 
     // Delete a course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> deleteCourse(@PathVariable Long id, Principal principal) {
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<MessageResponse> deleteCourse(@PathVariable Long courseId, Principal principal) {
 
         Long principalLecturer = lecturerService.getLecturer(principal).getLecturerId();
 
         try {
-            Long courseLecturer = courseService.getLecturerByCourseId(id);
+            Long courseLecturer = courseService.getLecturerByCourseId(courseId);
             if (!principalLecturer.equals(courseLecturer)) {
                 return new ResponseEntity<>(
                         new MessageResponse("You are not authorized to delete this course"), HttpStatus.UNAUTHORIZED
                 );
             }
-            courseService.deleteCourse(id);
+            courseService.deleteCourse(courseId);
         } catch (IllegalArgumentException | NoSuchElementException e) {
             log.info("Tried to delete course that was not found" + e);
             return new ResponseEntity<>(new MessageResponse("Course was not found"), HttpStatus.NOT_FOUND);
@@ -113,68 +113,67 @@ public class CourseController {
 
     // Update a course
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @PutMapping("/{id}")
+    @PutMapping("/{courseId}")
     public ResponseEntity<CourseResponseDto> updateCourse(
-            @PathVariable("id") Long id,
+            @PathVariable("courseId") Long courseId,
             @RequestBody CourseRequestDto courseDto,
             Principal principal
     ) {
 
         // check if the given course exists
-        if (null == courseService.getCourseById(id, lecturerService.getLecturer(principal))) {
+        if (null == courseService.getCourseById(courseId, lecturerService.getLecturer(principal))) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // check if Lecturer is permitted to update
-        if (!courseService.getLecturerByCourseId(id).equals(lecturerService.getLecturer(principal).getLecturerId())) {
-           return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        if (!courseService.getLecturerByCourseId(courseId).equals(lecturerService.getLecturer(principal).getLecturerId())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         // update Course
-        CourseResponseDto updatedCourse = courseService.updateCourse(id, courseDto);
+        CourseResponseDto updatedCourse = courseService.updateCourse(courseId, courseDto);
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
 
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @GetMapping("/{id}/all-evaluations")
-    ResponseEntity<List<EvaluationResponseDto>> getEvaluation(@PathVariable Long id, Principal principal) {
-       Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-       if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
-        }
-        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(id));
-    }
-
-    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @GetMapping("/{id}/newest-evaluation")
-    ResponseEntity<EvaluationResponseDto> getNewestEvaluation(@PathVariable Long id, Principal principal) {
-         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-           return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
-        }
-        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(id).get(0));
-
-    }
-
-    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
-    @GetMapping("/{id}/qr-code")
-    ResponseEntity<QrCodeResponse> getQRCodeForEvaluation(@PathVariable Long id, Principal principal) {
+    @GetMapping("/{courseId}/all-evaluations")
+    ResponseEntity<List<EvaluationResponseDto>> getEvaluation(@PathVariable Long courseId, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
-        if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        if (!courseService.getLecturerByCourseId(courseId).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        EvaluationResponseDto evaluation = courseService.loadEvaluationsByCourseId(id).get(0);
-        Integer shortcode =  evaluation.getShortcode();
-        String stringShortCode = shortcode.toString();
+        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(courseId));
+    }
+
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/{courseId}/newest-evaluation")
+    ResponseEntity<EvaluationResponseDto> getNewestEvaluation(@PathVariable Long courseId, Principal principal) {
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!courseService.getLecturerByCourseId(courseId).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return ResponseEntity.ok(courseService.loadEvaluationsByCourseId(courseId).get(0));
+
+    }
+
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/{courseId}/qr-code")
+    ResponseEntity<QrCodeResponse> getQRCodeForEvaluation(@PathVariable Long courseId, Principal principal) {
+        Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
+        if (!courseService.getLecturerByCourseId(courseId).equals(lecturerId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        EvaluationResponseDto evaluation = courseService.loadEvaluationsByCourseId(courseId).get(0);
+        String shortcode = evaluation.getShortcode();
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array
-            image = QRCodeGenerator.getQRCodeImage(stringShortCode,250,250);
+            image = QRCodeGenerator.getQRCodeImage(shortcode, 250, 250);
         } catch (WriterException | IOException e) {
-            e.printStackTrace();
+            log.error("Error creating QR code", e);
         }
-        QrCodeResponse qrCodeResponse = new QrCodeResponse(image,shortcode);
-        return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK );
+        QrCodeResponse qrCodeResponse = new QrCodeResponse(image, shortcode);
+        return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK);
     }
 }
 

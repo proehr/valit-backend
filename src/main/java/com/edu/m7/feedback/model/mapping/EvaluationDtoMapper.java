@@ -48,7 +48,7 @@ public interface EvaluationDtoMapper {
 
     default QuestionType questionTypeFromEntity(Question question) {
         if (question instanceof ChoiceQuestion) {
-            return QuestionType.SCALE;
+            return QuestionType.CHOICE;
         }
         return QuestionType.TEXT;
     }
