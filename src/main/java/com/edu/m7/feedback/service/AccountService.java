@@ -89,4 +89,8 @@ public class AccountService implements UserDetailsManager {
     public boolean userExists(String username) {
         return repository.findByUsername(username).isPresent();
     }
+
+    public Account findByUsername(String username) {
+        return repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No User found for username -> " + username));
+    }
 }
