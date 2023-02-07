@@ -14,6 +14,7 @@ import com.edu.m7.feedback.payload.request.QuestionRequestDto;
 import com.edu.m7.feedback.payload.response.QuestionResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
@@ -101,5 +102,9 @@ public class QuestionService {
                 }
             }
         }
+    }
+
+    Question getQuestionById(Long id) {
+        return questionRepository.findById(id).orElseThrow();
     }
 }
