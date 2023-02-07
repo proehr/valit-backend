@@ -3,7 +3,8 @@
     "questionKey": "recurrent.likedCourseToday",
     "questionPosition": 0,
     "sectionNumber": 0,
-    "questionType": "SCALE",
+    "questionType": "CHOICE",
+    "visualizationType": "SCALE",
     "questionChoices": [
       {
         "choiceKey": "choice.good",
@@ -41,7 +42,8 @@
     "questionKey": "recurrent.spendFreetime",
     "questionPosition": 4,
     "sectionNumber": 0,
-    "questionType": "SCALE",
+    "questionType": "CHOICE",
+    "visualizationType": "PIE",
     "questionChoices": [
       {
         "choiceKey": "choice.yes",
