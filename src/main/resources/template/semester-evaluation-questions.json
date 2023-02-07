@@ -1,546 +1,546 @@
 [
   {
-    "questionKey": "semester_overallCourseRating",
+    "questionKey": "semester.overallCourseRating",
     "questionPosition": 0,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryBad",
+        "choiceKey": "choice.veryBad",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_bad",
+        "choiceKey": "choice.bad",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_good",
+        "choiceKey": "choice.good",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryGood",
+        "choiceKey": "choice.veryGood",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_workDifficulty",
+    "questionKey": "semester.workDifficulty",
     "questionPosition": 1,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryHard",
+        "choiceKey": "choice.veryHard",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_hard",
+        "choiceKey": "choice.hard",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_easy",
+        "choiceKey": "choice.easy",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryEasy",
+        "choiceKey": "choice.veryEasy",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_learningProcess",
+    "questionKey": "semester.learningProcess",
     "questionPosition": 2,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryBad",
+        "choiceKey": "choice.veryBad",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_bad",
+        "choiceKey": "choice.bad",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_good",
+        "choiceKey": "choice.good",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryGood",
+        "choiceKey": "choice.veryGood",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_courseImprovements",
+    "questionKey": "semester.courseImprovements",
     "questionPosition": 3,
     "sectionNumber": 0,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "semester_likedAboutCourse",
+    "questionKey": "semester.likedAboutCourse",
     "questionPosition": 4,
     "sectionNumber": 0,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "semester_courseMaterials",
+    "questionKey": "semester.courseMaterials",
     "questionPosition": 5,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryUseless",
+        "choiceKey": "choice.veryUseless",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_useless",
+        "choiceKey": "choice.useless",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_useful",
+        "choiceKey": "choice.useful",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryUseful",
+        "choiceKey": "choice.veryUseful",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_topicsOverview",
+    "questionKey": "semester.topicsOverview",
     "questionPosition": 0,
     "sectionNumber": 1,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_solveProblems",
+    "questionKey": "semester.solveProblems",
     "questionPosition": 1,
     "sectionNumber": 1,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_moreInterest",
+    "questionKey": "semester.moreInterest",
     "questionPosition": 2,
     "sectionNumber": 1,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_homeworkAssignments",
+    "questionKey": "semester.homeworkAssignments",
     "questionPosition": 3,
     "sectionNumber": 1,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryUnhelpful",
+        "choiceKey": "choice.veryUnhelpful",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_unhelpful",
+        "choiceKey": "choice.unhelpful",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_helpful",
+        "choiceKey": "choice.helpful",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryHelpful",
+        "choiceKey": "choice.veryHelpful",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_explainedLearning",
+    "questionKey": "semester.explainedLearning",
     "questionPosition": 0,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_previousKnowledge",
+    "questionKey": "semester.previousKnowledge",
     "questionPosition": 1,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_interactiveLecture",
+    "questionKey": "semester.interactiveLecture",
     "questionPosition": 2,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_assistanceHelpful",
+    "questionKey": "semester.assistanceHelpful",
     "questionPosition": 3,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_groupExercises",
+    "questionKey": "semester.groupExercises",
     "questionPosition": 4,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_stronglyDisagree",
+        "choiceKey": "choice.stronglyDisagree",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_disagree",
+        "choiceKey": "choice.disagree",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_agree",
+        "choiceKey": "choice.agree",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_stronglyAgree",
+        "choiceKey": "choice.stronglyAgree",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_approachableInstructor",
+    "questionKey": "semester.approachableInstructor",
     "questionPosition": 5,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_veryDifficult",
+        "choiceKey": "choice.veryDifficult",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_difficult",
+        "choiceKey": "choice.difficult",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_easy",
+        "choiceKey": "choice.easy",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_veryEasy",
+        "choiceKey": "choice.veryEasy",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_instructionSpeed",
+    "questionKey": "semester.instructionSpeed",
     "questionPosition": 6,
     "sectionNumber": 2,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_wayTooFast",
+        "choiceKey": "choice.wayTooFast",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_tooFast",
+        "choiceKey": "choice.tooFast",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_justRight",
+        "choiceKey": "choice.justRight",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_tooSlow",
+        "choiceKey": "choice.tooSlow",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_wayToSlow",
+        "choiceKey": "choice.wayToSlow",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_anythingElse",
+    "questionKey": "semester.anythingElse",
     "questionPosition": 7,
     "sectionNumber": 2,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "semester_courseAttended",
+    "questionKey": "semester.courseAttended",
     "questionPosition": 0,
     "sectionNumber": 3,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_never",
+        "choiceKey": "choice.never",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_rarely",
+        "choiceKey": "choice.rarely",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_sometimes",
+        "choiceKey": "choice.sometimes",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_often",
+        "choiceKey": "choice.often",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_always",
+        "choiceKey": "choice.always",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_genderIdentification",
+    "questionKey": "semester.genderIdentification",
     "questionPosition": 1,
     "sectionNumber": 3,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_male",
+        "choiceKey": "choice.male",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_female",
+        "choiceKey": "choice.female",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_diverse",
+        "choiceKey": "choice.diverse",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_notSpecified",
+        "choiceKey": "choice.notSpecified",
         "choiceValue": 3
       }
     ]
   },
   {
-    "questionKey": "semester_besideWork",
+    "questionKey": "semester.besideWork",
     "questionPosition": 2,
     "sectionNumber": 3,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_notAtAll",
+        "choiceKey": "choice.notAtAll",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_lessThanTen",
+        "choiceKey": "choice.lessThanTen",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_tenToTwenty",
+        "choiceKey": "choice.tenToTwenty",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_moreThanTwenty",
+        "choiceKey": "choice.moreThanTwenty",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_notSpecified",
+        "choiceKey": "choice.notSpecified",
         "choiceValue": 4
       }
     ]
   },
   {
-    "questionKey": "semester_coursesAmount",
+    "questionKey": "semester.coursesAmount",
     "questionPosition": 3,
     "sectionNumber": 3,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_onlyThis",
+        "choiceKey": "choice.onlyThis",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_twoCourses",
+        "choiceKey": "choice.twoCourses",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_threeCourses",
+        "choiceKey": "choice.threeCourses",
         "choiceValue": 2
       },
       {
-        "choiceKey": "choice_moreThanThreeCourses",
+        "choiceKey": "choice.moreThanThreeCourses",
         "choiceValue": 3
       },
       {
-        "choiceKey": "choice_notSpecified",
+        "choiceKey": "choice.notSpecified",
         "choiceValue": 4
       }
     ]

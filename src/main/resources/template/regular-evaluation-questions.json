@@ -1,54 +1,54 @@
 [
   {
-    "questionKey": "recurrent_likedCourseToday",
+    "questionKey": "recurrent.likedCourseToday",
     "questionPosition": 0,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_good",
+        "choiceKey": "choice.good",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_neutral",
+        "choiceKey": "choice.neutral",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice_bad",
+        "choiceKey": "choice.bad",
         "choiceValue": 2
       }
     ]
   },
   {
-    "questionKey": "recurrent_likeOrNotLike",
+    "questionKey": "recurrent.likeOrNotLike",
     "questionPosition": 1,
     "sectionNumber": 0,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "recurrent_learnedToday",
+    "questionKey": "recurrent.learnedToday",
     "questionPosition": 2,
     "sectionNumber": 0,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "recurrent_suggestionsImprovement",
+    "questionKey": "recurrent.suggestionsImprovement",
     "questionPosition": 3,
     "sectionNumber": 0,
     "questionType": "TEXT"
   },
   {
-    "questionKey": "recurrent_spendFreetime",
+    "questionKey": "recurrent.spendFreetime",
     "questionPosition": 4,
     "sectionNumber": 0,
     "questionType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice_yes",
+        "choiceKey": "choice.yes",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice_no",
+        "choiceKey": "choice.no",
         "choiceValue": 1
       }
     ]
