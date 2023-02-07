@@ -12,6 +12,7 @@ import com.edu.m7.feedback.model.repository.QuestionRepository;
 import com.edu.m7.feedback.payload.QuestionPayloadDtoMapper;
 import com.edu.m7.feedback.payload.request.QuestionRequestDto;
 import com.edu.m7.feedback.payload.response.QuestionResponseDto;
+import com.edu.m7.feedback.payload.response.StudentEvaluationResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.patterns.TypePatternQuestions;
@@ -47,15 +48,20 @@ public class QuestionService {
         this.objectMapper = objectMapper;
     }
 
-    public List<QuestionResponseDto> getQuestionsByEvaluationShortCode(String shortCode) {
+    public StudentEvaluationResponse getQuestionsByEvaluationShortCode(String shortCode) {
         Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortCode);
         if (evaluation == null) {
             throw new NoSuchElementException("Evaluation not found by shortcode");
         }
-        return evaluation.getQuestions()
+        StudentEvaluationResponse evaluationResponse = new StudentEvaluationResponse();
+        evaluationResponse.setQuestions(evaluation.getQuestions()
                 .stream()
                 .map(questionMapper::map)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
+        evaluationResponse.setEvaluationType(evaluation.getType());
+        evaluationResponse.setEndTimeOfLiveFeature(evaluation.getCourse().getTimeEnd());
+        return evaluationResponse;
     }
 
     public void generateQuestions(EvaluationType evaluationType, Evaluation evaluation) {
