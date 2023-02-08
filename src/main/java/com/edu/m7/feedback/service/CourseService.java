@@ -39,7 +39,7 @@ public class CourseService {
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
     private final DateRepository dateRepository;
-    private EvaluationService evaluationService;
+    private final EvaluationService evaluationService;
 
     public CourseService(
             CourseRepository courseRepository,
