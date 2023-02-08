@@ -1,5 +1,7 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.repository.CourseRepository;
+import com.edu.m7.feedback.model.repository.DateRepository;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -7,7 +9,6 @@ import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.payload.response.QrCodeResponse;
 import com.edu.m7.feedback.service.CourseService;
-import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,9 @@ public class CourseController {
     private final LecturerService lecturerService;
 
     @Autowired
-    public CourseController(CourseService courseService, LecturerService lecturerService) {
+    public CourseController(CourseService courseService, LecturerService lecturerService,
+                            DateRepository dateRepository,
+                            CourseRepository courseRepository) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
     }
@@ -58,6 +61,17 @@ public class CourseController {
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping("/next-three")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
+    ResponseEntity<List<CourseResponseDto>> getUpcomingCourses(Principal principal) {
+        //get the current lecturer
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+
+        //get the next three courses
+        List<CourseResponseDto> coursesDto = courseService.getNextThreeCourses(lecturer);
+        return new ResponseEntity<>(coursesDto, HttpStatus.OK);
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
@@ -78,7 +92,6 @@ public class CourseController {
             @RequestBody CourseRequestDto courseDto,
             Principal principal
     ) {
-
         Lecturer lecturer = lecturerService.getLecturer(principal);
         CourseResponseDto savedCourse = courseService.createCourse(courseDto, lecturer);
 
@@ -175,6 +188,21 @@ public class CourseController {
         QrCodeResponse qrCodeResponse = new QrCodeResponse(image, shortcode);
         return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK);
     }
+
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/dates")
+    ResponseEntity<List<String>> getAllDates(Principal principal) {
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+        List<String> dates = courseService.getAllDates(lecturer);
+
+        if (dates != null) {
+            return new ResponseEntity<>(dates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+
 
     @GetMapping("/prev-courses")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
