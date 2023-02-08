@@ -78,11 +78,9 @@ public class EvaluationCreationScheduler {
         for (Evaluation activeEvaluation : activeEvaluations) {
 
             if (activeEvaluation.getType() == EvaluationType.REGULAR &&
-                    activeEvaluation
-                            .getCourse()
-                            .getDates()
-                            .stream()
-                            .noneMatch((Date date) -> date.getLocalDate().isEqual(LocalDate.now()))
+                    (!activeEvaluation.getDate().isEqual(LocalDate.now()) ||
+                            activeEvaluation.getCourse().getDates().stream()
+                                    .noneMatch((Date date) -> date.getLocalDate().isEqual(activeEvaluation.getDate())))
             ) {
                 activeEvaluation.setActive(false);
                 activeEvaluation.setShortcode(null);
