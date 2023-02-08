@@ -128,7 +128,7 @@ public class EvaluationController {
         }
         try {
             EvaluationHeaderResponse evaluationHeaderResponse =
-                    evaluationService.loadEvaluationHeaderById(id, courseId);
+                    evaluationService.loadEvaluationHeaderById(id);
             return ResponseEntity.ok(evaluationHeaderResponse);
         } catch (NoSuchElementException e) {
             log.info("Could not find evaluation header", e);

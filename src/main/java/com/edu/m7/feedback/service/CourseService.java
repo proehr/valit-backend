@@ -35,17 +35,19 @@ public class CourseService {
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
     private final DateRepository dateRepository;
+    private EvaluationService evaluationService;
 
     public CourseService(
             CourseRepository courseRepository,
             SemesterRepository semesterRepository,
             EvaluationRepository evaluationRepository,
-            DateRepository dateRepository
-    ) {
+            DateRepository dateRepository,
+            EvaluationService evaluationService) {
         this.courseRepository = courseRepository;
         this.semesterRepository = semesterRepository;
         this.evaluationRepository = evaluationRepository;
         this.dateRepository = dateRepository;
+        this.evaluationService = evaluationService;
     }
 
     public Set<Date> getDatesBetween(
@@ -124,15 +126,7 @@ public class CourseService {
         course.setLecturer(lecturer);
         course.setSemester(semester);
         courseRepository.save(course);
-        getDatesBetween(
-                semester.getStartDate(),
-                semester.getEndDate(),
-                course.getWeekday(),
-                course.getInterval()
-        ).forEach((Date date) -> {
-            date.setCourse(course);
-            dateRepository.save(date);
-        });
+        setDatesForCourse(semester, course);
         return mapper.entityToDto(courseRepository.save(course));
     }
 
@@ -144,6 +138,11 @@ public class CourseService {
         courseRepository.save(course);
 
         dateRepository.deleteAll(course.getDates());
+        setDatesForCourse(semester, course);
+        return mapper.entityToDto(course);
+    }
+
+    private void setDatesForCourse(Semester semester, Course course) {
         getDatesBetween(
                 semester.getStartDate(),
                 semester.getEndDate(),
@@ -153,8 +152,12 @@ public class CourseService {
             date.setCourse(course);
             dateRepository.save(date);
         });
-
-        return mapper.entityToDto(course);
+        if (course.getFinalEvaluationDate().isEqual(LocalDate.now())
+                || course.getFinalEvaluationDate().isBefore(LocalDate.now())) {
+            evaluationService.createSemesterEvaluationForCourse(course);
+        } else {
+            evaluationService.deleteActiveSemesterEvaluation(course);
+        }
     }
 
     public void deleteCourse(Long id) {
@@ -163,7 +166,7 @@ public class CourseService {
 
     public CourseResponseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        course.setDates(getDatesBetween(course.getSemester().getStartDate(),course.getSemester().getEndDate(),course.getWeekday(),course.getInterval()));
+        course.setDates(getDatesBetween(course.getSemester().getStartDate(), course.getSemester().getEndDate(), course.getWeekday(), course.getInterval()));
         return mapper.entityToDto(course);
     }
 
