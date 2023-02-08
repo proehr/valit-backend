@@ -198,7 +198,7 @@ public class CourseService {
         if (dates.isEmpty())
             return null;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY/MM/DD");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         List<String> formattedDates = dates.stream()
                 .map(date -> date.format(formatter))
                 .collect(Collectors.toList());
