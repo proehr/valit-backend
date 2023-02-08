@@ -7,23 +7,16 @@ import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.entity.Semester;
 import com.edu.m7.feedback.model.mapping.CourseDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
-import com.edu.m7.feedback.model.repository.DateRepository;
-import com.edu.m7.feedback.model.repository.EvaluationRepository;
-import com.edu.m7.feedback.model.repository.SemesterRepository;
+import com.edu.m7.feedback.model.repository.*;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
-import com.edu.m7.feedback.model.repository.CourseRepository;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,17 +28,19 @@ public class CourseService {
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
     private final DateRepository dateRepository;
+    private final LecturerRepository lecturerRepository;
 
     public CourseService(
             CourseRepository courseRepository,
             SemesterRepository semesterRepository,
             EvaluationRepository evaluationRepository,
-            DateRepository dateRepository
-    ) {
+            DateRepository dateRepository,
+            LecturerRepository lecturerRepository) {
         this.courseRepository = courseRepository;
         this.semesterRepository = semesterRepository;
         this.evaluationRepository = evaluationRepository;
         this.dateRepository = dateRepository;
+        this.lecturerRepository = lecturerRepository;
     }
 
     public Set<Date> getDatesBetween(
@@ -184,4 +179,26 @@ public class CourseService {
             return dto;
         }).collect(Collectors.toList());
     }
+    public List<LocalDate> getAllDates(Lecturer lecturer){
+        // get all the courses
+        List<Course> courses = courseRepository.findByLecturer(lecturer);
+
+        List<LocalDate> dates = new ArrayList<>();
+        for(Course c : courses){
+            // get set<date> of each course
+            Set<Date> currentCourseDates = c.getDates();
+            // get each Date object from the set
+            for(Date d: currentCourseDates){
+                // get the LocalDate of each date and extract it into our list of dates
+                dates.add(d.getLocalDate() );
+            }
+        }
+
+        if (dates.isEmpty())
+            return null;
+
+        return dates;
+    }
+
+
 }
