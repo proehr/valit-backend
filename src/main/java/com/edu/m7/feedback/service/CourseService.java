@@ -196,7 +196,6 @@ public class CourseService {
 
         if (dates.isEmpty())
             return null;
-
         return dates;
     }
 
