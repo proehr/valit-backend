@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -96,33 +97,6 @@ public class CourseService {
                 .findByLecturer(lecturer)
                 .stream()
                 .map(mapper::entityToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<CourseResponseDto> getNextThreeCourses(Lecturer lecturer) {
-
-        // get all the courses associated with the Lecturer
-        List<Course> courses = courseRepository.findByLecturer(lecturer);
-
-        // get today's date
-        LocalDate today = LocalDate.now();
-
-        List<Date> courseDates = courses.stream()
-                .sorted(Comparator.comparing(Course::getTimeStart))
-                .flatMap(course -> course.getDates().stream())
-                .filter((Date date) -> date.getLocalDate().equals(today) || date.getLocalDate().isAfter(today))
-                .sorted(Comparator.comparing(Date::getLocalDate))
-                .limit(3)
-                .collect(Collectors.toList());
-
-        List<Course> nextCourses = new ArrayList<>();
-        for (Date courseDate : courseDates) {
-            nextCourses.add(courseDate.getCourse());
-        }
-
-        return nextCourses.stream()
-                .map(mapper::entityToDto)
-                .sorted(Comparator.comparing(CourseResponseDto::getTimeStart))
                 .collect(Collectors.toList());
     }
 
@@ -241,7 +215,6 @@ public class CourseService {
     }
 
 
-
     public List<CourseResponseDto> getPreviousThreeCourses(Lecturer lecturer) {
         // get all the courses associated with the Lecturer
         List<Course> courses = courseRepository.findByLecturer(lecturer);
@@ -251,23 +224,52 @@ public class CourseService {
 
         // get all the Dates of the upcoming courses
         List<Date> courseDates = courses.stream()
-                .flatMap(course -> course.getDates().stream()) // get Only the 'Date' object from the course
-                .sorted( (a,b) -> b.getLocalDate().compareTo(a.getLocalDate()) ) // sort the dates in ascending manner
-                .filter( o -> o.getLocalDate().isBefore(today) ) // get only the Dates before today
-                .limit(3) // get the first three
-                .collect(Collectors.toList()); // pack them into a list
+                .sorted((a, b) -> b.getTimeEnd().compareTo(a.getTimeEnd()))
+                .flatMap(course -> course.getDates().stream())
+                .filter((Date date) ->
+                        (date.getLocalDate().equals(today) && date.getCourse().getTimeEnd().isBefore(LocalTime.now()))
+                                || date.getLocalDate().isBefore(today))
+                .sorted((a, b) -> b.getLocalDate().compareTo(a.getLocalDate()))
+                .limit(3)
+                .collect(Collectors.toList());
 
         List<Course> prevCourses = new ArrayList<>();
-
         for (Date courseDate : courseDates) {
             Course course = courseRepository.findById(courseDate.getCourse().getId()).orElseThrow();
             prevCourses.add(course);
         }
 
-        // return courses in desc order
         return prevCourses.stream()
                 .map(mapper::entityToDto)
-                .sorted( (a,b) -> b.getTimeStart().compareTo(a.getTimeStart()) )
+                .collect(Collectors.toList());
+    }
+
+    public List<CourseResponseDto> getNextThreeCourses(Lecturer lecturer) {
+
+        // get all the courses associated with the Lecturer
+        List<Course> courses = courseRepository.findByLecturer(lecturer);
+
+        // get today's date
+        LocalDate today = LocalDate.now();
+
+        List<Date> courseDates = courses.stream()
+                .sorted(Comparator.comparing(Course::getTimeStart))
+                .flatMap(course -> course.getDates().stream())
+                .filter((Date date) ->
+                        (date.getLocalDate().equals(today) && date.getCourse().getTimeEnd().isAfter(LocalTime.now()))
+                                || date.getLocalDate().isAfter(today)
+                )
+                .sorted(Comparator.comparing(Date::getLocalDate))
+                .limit(3)
+                .collect(Collectors.toList());
+
+        List<Course> nextCourses = new ArrayList<>();
+        for (Date courseDate : courseDates) {
+            nextCourses.add(courseDate.getCourse());
+        }
+
+        return nextCourses.stream()
+                .map(mapper::entityToDto)
                 .collect(Collectors.toList());
     }
 }

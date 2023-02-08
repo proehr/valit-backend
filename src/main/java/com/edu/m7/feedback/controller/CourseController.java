@@ -41,9 +41,7 @@ public class CourseController {
     private final LecturerService lecturerService;
 
     @Autowired
-    public CourseController(CourseService courseService, LecturerService lecturerService,
-                            DateRepository dateRepository,
-                            CourseRepository courseRepository) {
+    public CourseController(CourseService courseService, LecturerService lecturerService) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
     }
@@ -203,21 +201,15 @@ public class CourseController {
     }
 
 
-
     @GetMapping("/prev-courses")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    ResponseEntity<List<CourseResponseDto>> getPreviousCourses(Principal principal){
+    ResponseEntity<List<CourseResponseDto>> getPreviousCourses(Principal principal) {
         //get the current lecturer
         Lecturer lecturer = lecturerService.getLecturer(principal);
 
         //get the next three courses
         List<CourseResponseDto> coursesDto = courseService.getPreviousThreeCourses(lecturer);
-
-        if (coursesDto != null) {
-            return new ResponseEntity<>(coursesDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        return new ResponseEntity<>(coursesDto, HttpStatus.OK);
     }
 }
 
