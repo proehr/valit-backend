@@ -1,14 +1,28 @@
 package com.edu.m7.feedback.service;
 
+import com.edu.m7.feedback.model.EvaluationType;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Evaluation;
 import com.edu.m7.feedback.model.entity.IntAnswer;
 import com.edu.m7.feedback.model.entity.Lecturer;
+import com.edu.m7.feedback.model.repository.CourseRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class DataAggregationService {
 
     private static final int QUESTION_CHOICE_AMOUNT = 5;
     private static final int[] CHOICE_WEIGHTS = new int[]{0, 25, 50, 75, 100};
+
+    private final CourseRepository courseRepository;
+
+    public DataAggregationService(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     public int getOverallCourseRating(Lecturer lecturer) {
 
@@ -32,5 +46,18 @@ public class DataAggregationService {
 
         return rating / answerAmount;
 
+    }
+
+    public List<Integer> getAttendance(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow();
+        List<Integer> attendanceList = new ArrayList<>();
+        for (Evaluation evaluation : course.getEvaluations()) {
+            if (evaluation.getType() == EvaluationType.REGULAR) {
+                Integer size = evaluation.getQuestions().iterator().next().getAnswers().size();
+                attendanceList.add(size);
+            }
+        }
+        Collections.reverse(attendanceList);
+        return attendanceList;
     }
 }

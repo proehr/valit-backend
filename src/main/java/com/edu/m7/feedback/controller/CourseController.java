@@ -78,7 +78,7 @@ public class CourseController {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         Long courseLecturerId = courseService.getLecturerByCourseId(courseId);
         if (!courseLecturerId.equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.ok(courseService.getCourseById(courseId));
     }

@@ -75,7 +75,7 @@ public class EvaluationController {
             Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         try {
             EvaluationResponseDto evaluationResponseDto = evaluationService.loadEvaluationResultByParticipant(id, participantId);
@@ -91,7 +91,7 @@ public class EvaluationController {
     ResponseEntity<List<Long>> getParticipants(@PathVariable Long id, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         if (!evaluationService.getLecturerIdByEvaluationId(id).equals(lecturerId)) {
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         try {
             List<Long> participants = evaluationService.getParticipants(id);
