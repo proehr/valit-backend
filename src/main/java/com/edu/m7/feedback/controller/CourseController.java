@@ -195,7 +195,6 @@ public class CourseController {
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
     }
 
 
