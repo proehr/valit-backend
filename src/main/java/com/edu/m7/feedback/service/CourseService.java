@@ -19,7 +19,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,26 +104,24 @@ public class CourseService {
         // get today's date
         LocalDate today = LocalDate.now();
 
-        // get all the Dates of the upcoming courses
         List<Date> courseDates = courses.stream()
-                .flatMap(course -> course.getDates().stream()) // get Only the 'Date' object from the course
-                .sorted( (a,b) -> a.getLocalDate().compareTo(b.getLocalDate()) )
-                .filter( o -> o.getLocalDate().isAfter(today) ) // get only the Dates after today
-                .limit(3) // get the first three
-                .collect(Collectors.toList()); // pack them into a list
+                .sorted(Comparator.comparing(Course::getTimeStart))
+                .flatMap(course -> course.getDates().stream())
+                .filter((Date date) -> date.getLocalDate().equals(today) || date.getLocalDate().isAfter(today))
+                .sorted(Comparator.comparing(Date::getLocalDate))
+                .limit(3)
+                .collect(Collectors.toList());
 
         List<Course> nextCourses = new ArrayList<>();
-
-        for(int i = 0; i< courseDates.size(); ++i){
-            nextCourses.add(courseRepository.findById(courseDates.get(i).getCourse().getId() ).get());
+        for (Date courseDate : courseDates) {
+            nextCourses.add(courseDate.getCourse());
         }
 
         return nextCourses.stream()
-        .map(mapper::entityToDto)
-        .sorted( (a,b) -> a.getTimeStart().compareTo(b.getTimeStart()) )
-        .collect(Collectors.toList());
+                .map(mapper::entityToDto)
+                .sorted(Comparator.comparing(CourseResponseDto::getTimeStart))
+                .collect(Collectors.toList());
     }
-
 
 
     public CourseResponseDto getCourseById(Long id, Lecturer lecturer) {
@@ -189,7 +193,7 @@ public class CourseService {
 
     public CourseResponseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        course.setDates(getDatesBetween(course.getSemester().getStartDate(),course.getSemester().getEndDate(),course.getWeekday(),course.getInterval()));
+        course.setDates(getDatesBetween(course.getSemester().getStartDate(), course.getSemester().getEndDate(), course.getWeekday(), course.getInterval()));
         return mapper.entityToDto(course);
     }
 

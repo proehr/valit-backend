@@ -62,19 +62,13 @@ public class CourseController {
 
     @GetMapping("/next-three")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    ResponseEntity<List<CourseResponseDto>> getUpcomingCourses(Principal principal){
+    ResponseEntity<List<CourseResponseDto>> getUpcomingCourses(Principal principal) {
         //get the current lecturer
         Lecturer lecturer = lecturerService.getLecturer(principal);
 
         //get the next three courses
         List<CourseResponseDto> coursesDto = courseService.getNextThreeCourses(lecturer);
-
-
-        if (coursesDto != null) {
-            return new ResponseEntity<>(coursesDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        return new ResponseEntity<>(coursesDto, HttpStatus.OK);
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
