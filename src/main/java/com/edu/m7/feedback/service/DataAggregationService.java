@@ -4,8 +4,6 @@ import com.edu.m7.feedback.model.entity.IntAnswer;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-
 @Service
 public class DataAggregationService {
 
@@ -29,7 +27,7 @@ public class DataAggregationService {
         }
 
         if (answerAmount == 0) {
-            throw new NoSuchElementException("Could not find any answers for the signed in user");
+            return -1;
         }
 
         return rating / answerAmount;
