@@ -1,5 +1,7 @@
 package com.edu.m7.feedback.controller;
 
+import com.edu.m7.feedback.model.repository.CourseRepository;
+import com.edu.m7.feedback.model.repository.DateRepository;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -7,7 +9,6 @@ import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.payload.response.QrCodeResponse;
 import com.edu.m7.feedback.service.CourseService;
-import com.edu.m7.feedback.service.EvaluationService;
 import com.edu.m7.feedback.service.LecturerService;
 import com.google.zxing.WriterException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -35,14 +37,20 @@ import java.util.NoSuchElementException;
 @Slf4j
 @CrossOrigin
 public class CourseController {
+    private final CourseRepository courseRepository;
+    private final DateRepository dateRepository;
 
     private final CourseService courseService;
     private final LecturerService lecturerService;
 
     @Autowired
-    public CourseController(CourseService courseService, LecturerService lecturerService) {
+    public CourseController(CourseService courseService, LecturerService lecturerService,
+                            DateRepository dateRepository,
+                            CourseRepository courseRepository) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
+        this.dateRepository = dateRepository;
+        this.courseRepository = courseRepository;
     }
 
     // retrieve all the courses of the currently logged in Lecturer
@@ -175,6 +183,22 @@ public class CourseController {
         QrCodeResponse qrCodeResponse = new QrCodeResponse(image, shortcode);
         return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK);
     }
+
+    @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
+    @GetMapping("/dates")
+    ResponseEntity<List<LocalDate>> getAllDates(Principal principal){
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+        List<LocalDate> dates = courseService.getAllDates(lecturer);
+
+        if (dates != null) {
+            return new ResponseEntity<>(dates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+    }
+
+
 }
 
 
