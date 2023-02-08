@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/data")
@@ -31,14 +30,9 @@ public class DataAggregationController {
 
     @GetMapping("/rating")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    ResponseEntity<Integer> getOverallCourseRating(Principal principal){
+    ResponseEntity<Integer> getOverallCourseRating(Principal principal) {
         Lecturer lecturer = lecturerService.getLecturer(principal);
-        try{
-            return new ResponseEntity<>(dataAggregationService.getOverallCourseRating(lecturer), HttpStatus.OK);
-        }catch (NoSuchElementException e){
-            log.info("Requested course rating for lecturer without ratings", e);
-            return new ResponseEntity<>(0, HttpStatus.NO_CONTENT);
-        }
+        return new ResponseEntity<>(dataAggregationService.getOverallCourseRating(lecturer), HttpStatus.OK);
 
     }
 }
