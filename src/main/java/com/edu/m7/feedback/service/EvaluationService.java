@@ -1,15 +1,24 @@
 package com.edu.m7.feedback.service;
 
 import com.edu.m7.feedback.model.EvaluationType;
+import com.edu.m7.feedback.model.QuestionType;
 import com.edu.m7.feedback.model.dto.AnswerDto;
+import com.edu.m7.feedback.model.dto.IntAnswerDto;
+import com.edu.m7.feedback.model.dto.StringAnswerDto;
+import com.edu.m7.feedback.model.entity.Account;
 import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Evaluation;
+import com.edu.m7.feedback.model.entity.IntAnswer;
+import com.edu.m7.feedback.model.entity.Question;
+import com.edu.m7.feedback.model.entity.StringAnswer;
+import com.edu.m7.feedback.model.mapping.AnswerDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationHeaderResponseMapper;
+import com.edu.m7.feedback.model.repository.AnswerRepository;
+import com.edu.m7.feedback.payload.request.PostAnswerRequest;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
-import com.edu.m7.feedback.model.entity.Evaluation;
-import com.edu.m7.feedback.model.entity.Question;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
 import com.edu.m7.feedback.util.ShortCodeUtil;
@@ -32,9 +41,11 @@ import java.util.stream.Collectors;
 public class EvaluationService {
 
     private static final EvaluationDtoMapper evaluationMapper = Mappers.getMapper(EvaluationDtoMapper.class);
+    private static final AnswerDtoMapper answerMapper = Mappers.getMapper(AnswerDtoMapper.class);
     private static final EvaluationHeaderResponseMapper EvaluationHeaderMapper =
             Mappers.getMapper(EvaluationHeaderResponseMapper.class);
     private final EvaluationRepository evaluationRepository;
+    private final AnswerRepository answerRepository;
     private final CourseService courseService;
     private final QuestionService questionService;
 
@@ -43,9 +54,11 @@ public class EvaluationService {
 
     public EvaluationService(
             EvaluationRepository evaluationRepository,
+            AnswerRepository answerRepository,
             CourseService courseService,
             QuestionService questionService) {
         this.evaluationRepository = evaluationRepository;
+        this.answerRepository = answerRepository;
         this.courseService = courseService;
         this.questionService = questionService;
     }
@@ -103,7 +116,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto getEvaluationByShortcode(String shortcode) {
-        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode);
+        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode).orElseThrow();
         return evaluationMapper.map(evaluation);
     }
 
@@ -124,4 +137,28 @@ public class EvaluationService {
         questionService.generateQuestions(evaluationType, evaluation);
     }
 
+    public EvaluationResponseDto updateTitle(Long evaluationId, String newTitle) {
+        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow();
+        evaluation.setTitle(newTitle);
+        evaluationRepository.save(evaluation);
+        return evaluationMapper.entityToDto(evaluation);
+    }
+    public void postAnswers(List<PostAnswerRequest> postAnswerRequests, Account account) {
+        for (PostAnswerRequest postAnswerRequest : postAnswerRequests) {
+            Question question = questionService.getQuestionById(postAnswerRequest.getId());
+            if (postAnswerRequest.getQuestionType().equals(QuestionType.TEXT)) {
+                StringAnswerDto stringAnswerDto = (StringAnswerDto) postAnswerRequest.getAnswer();
+                StringAnswer stringAnswer = answerMapper.toStringAnswerEntity(stringAnswerDto);
+                stringAnswer.setQuestion(question);
+                stringAnswer.setAccount(account);
+                answerRepository.save(stringAnswer);
+            } else {
+                IntAnswerDto intAnswerDto = (IntAnswerDto) postAnswerRequest.getAnswer();
+                IntAnswer intAnswer = answerMapper.toIntAnswerEntity(intAnswerDto);
+                intAnswer.setQuestion(question);
+                intAnswer.setAccount(account);
+                answerRepository.save(intAnswer);
+            }
+        }
+    }
 }
