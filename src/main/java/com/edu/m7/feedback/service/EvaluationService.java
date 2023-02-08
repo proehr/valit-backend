@@ -5,7 +5,12 @@ import com.edu.m7.feedback.model.QuestionType;
 import com.edu.m7.feedback.model.dto.AnswerDto;
 import com.edu.m7.feedback.model.dto.IntAnswerDto;
 import com.edu.m7.feedback.model.dto.StringAnswerDto;
-import com.edu.m7.feedback.model.entity.*;
+import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Evaluation;
+import com.edu.m7.feedback.model.entity.IntAnswer;
+import com.edu.m7.feedback.model.entity.Question;
+import com.edu.m7.feedback.model.entity.StringAnswer;
 import com.edu.m7.feedback.model.mapping.AnswerDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationHeaderResponseMapper;
 import com.edu.m7.feedback.model.repository.AnswerRepository;
@@ -111,7 +116,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto getEvaluationByShortcode(String shortcode) {
-        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode);
+        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode).orElseThrow();
         return evaluationMapper.map(evaluation);
     }
 
