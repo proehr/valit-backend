@@ -7,16 +7,24 @@
     "visualizationType": "SCALE",
     "questionChoices": [
       {
-        "choiceKey": "choice.good",
+        "choiceKey": "choice.veryBad",
         "choiceValue": 0
       },
       {
-        "choiceKey": "choice.neutral",
+        "choiceKey": "choice.bad",
         "choiceValue": 1
       },
       {
-        "choiceKey": "choice.bad",
+        "choiceKey": "choice.neutral",
         "choiceValue": 2
+      },
+      {
+        "choiceKey": "choice.good",
+        "choiceValue": 3
+      },
+      {
+        "choiceKey": "choice.veryGood",
+        "choiceValue": 4
       }
     ]
   },
