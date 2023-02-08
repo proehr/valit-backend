@@ -4,7 +4,10 @@ import com.edu.m7.feedback.model.entity.Account;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.AccountRepository;
 import com.edu.m7.feedback.model.repository.LecturerRepository;
+import com.edu.m7.feedback.payload.request.LecturerRequestDto;
+import com.edu.m7.feedback.payload.response.LecturerJwtResponse;
 import com.edu.m7.feedback.payload.response.MessageResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,7 @@ public class LecturerController {
         this.repository = repository;
         this.accountRepository = accountRepository;
     }
+
     Account getSignedInAccount(Principal principal) {
         String username = principal.getName();
         Optional<Account> optionalEntity = accountRepository.findByUsername(username);
@@ -37,29 +41,33 @@ public class LecturerController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping(value = "/profile")
-    ResponseEntity<Lecturer> getLecturer(Principal principal) {
+    ResponseEntity<LecturerJwtResponse> getLecturer(Principal principal) {
         String username = principal.getName();
-        Optional<Account> optionalEntity = accountRepository.findByUsername(username);
-        Account account  = optionalEntity.orElseThrow();
-        return ResponseEntity.ok(repository.findByAccount(account).orElseThrow());
+        Account account = getSignedInAccount(principal);
+        Optional<Lecturer> optionalLecturer = repository.findByAccount(account);
+        if (optionalLecturer.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Lecturer lecturer = optionalLecturer.get();
+        return ResponseEntity.ok(new LecturerJwtResponse("",
+                username,
+                lecturer.getLecturerId(),
+                lecturer.getTitle(),
+                lecturer.getFirstName(),
+                lecturer.getLastName())
+        );
     }
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @PostMapping("/lecturer")
-    // TODO: remove entity from controller method
-    ResponseEntity<MessageResponse> createOrUpdateLecturer(@RequestBody Lecturer newLecturer, Principal principal) {
+    ResponseEntity<MessageResponse> updateLecturer(@RequestBody LecturerRequestDto newLecturer, Principal principal) {
         Account account = getSignedInAccount(principal);
-        newLecturer.setAccount(account);
-         Optional<Lecturer> optionalLecturer = repository.findByAccount(account);
-        if (optionalLecturer.isPresent()) {
-            Lecturer lecturer = optionalLecturer.get();
-            newLecturer.setLecturerId(lecturer.getLecturerId());
-            newLecturer.setAccount(lecturer.getAccount());
-            repository.save(newLecturer);
-            return ResponseEntity.ok(new MessageResponse("Profile updated successfully!"));
-        } else {
-            repository.save(newLecturer);
-            return ResponseEntity.ok(new MessageResponse("Profile created successfully!"));
-        }
+        Lecturer lecturer = repository.findByAccount(account).orElseThrow();
+        lecturer.setTitle(newLecturer.getTitle());
+        lecturer.setFirstName(newLecturer.getFirstName());
+        lecturer.setLastName(newLecturer.getLastName());
+        repository.save(lecturer);
+        return ResponseEntity.ok(new MessageResponse("Profile updated successfully!"));
     }
+
 }

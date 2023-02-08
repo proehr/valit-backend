@@ -5,12 +5,16 @@ import com.edu.m7.feedback.model.QuestionType;
 import com.edu.m7.feedback.model.dto.AnswerDto;
 import com.edu.m7.feedback.model.dto.IntAnswerDto;
 import com.edu.m7.feedback.model.dto.StringAnswerDto;
-import com.edu.m7.feedback.model.entity.*;
+import com.edu.m7.feedback.model.entity.Account;
+import com.edu.m7.feedback.model.entity.Course;
+import com.edu.m7.feedback.model.entity.Evaluation;
+import com.edu.m7.feedback.model.entity.IntAnswer;
+import com.edu.m7.feedback.model.entity.Question;
+import com.edu.m7.feedback.model.entity.StringAnswer;
 import com.edu.m7.feedback.model.mapping.AnswerDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationHeaderResponseMapper;
 import com.edu.m7.feedback.model.repository.AnswerRepository;
 import com.edu.m7.feedback.payload.request.PostAnswerRequest;
-import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.payload.response.EvaluationHeaderResponse;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import com.edu.m7.feedback.model.dto.QuestionDto;
@@ -41,7 +45,6 @@ public class EvaluationService {
             Mappers.getMapper(EvaluationHeaderResponseMapper.class);
     private final EvaluationRepository evaluationRepository;
     private final AnswerRepository answerRepository;
-    private final CourseService courseService;
     private final QuestionService questionService;
 
     @Value("${valit.app.shortCodeLength}")
@@ -50,11 +53,9 @@ public class EvaluationService {
     public EvaluationService(
             EvaluationRepository evaluationRepository,
             AnswerRepository answerRepository,
-            CourseService courseService,
             QuestionService questionService) {
         this.evaluationRepository = evaluationRepository;
         this.answerRepository = answerRepository;
-        this.courseService = courseService;
         this.questionService = questionService;
     }
 
@@ -62,9 +63,9 @@ public class EvaluationService {
         return evaluationMapper.map(evaluationRepository.findById(id).orElseThrow());
     }
 
-    public EvaluationHeaderResponse loadEvaluationHeaderById(Long id, Long courseId) throws UsernameNotFoundException {
+    public EvaluationHeaderResponse loadEvaluationHeaderById(Long id) throws UsernameNotFoundException {
         Evaluation evaluation = evaluationRepository.findById(id).orElseThrow();
-        CourseResponseDto course = courseService.getCourseById(courseId);
+        Course course = evaluation.getCourse();
         EvaluationHeaderResponse evaluationHeaderResponse = EvaluationHeaderMapper.map(evaluation);
         evaluationHeaderResponse.setCourseName(course.getName());
         String participants = String.valueOf(evaluation.getQuestions().iterator().next().getAnswers().size());
@@ -111,8 +112,16 @@ public class EvaluationService {
     }
 
     public EvaluationResponseDto getEvaluationByShortcode(String shortcode) {
-        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode);
+        Evaluation evaluation = evaluationRepository.findEvaluationByShortcode(shortcode).orElseThrow();
         return evaluationMapper.map(evaluation);
+    }
+
+    public void createSemesterEvaluationForCourse(Course course) {
+        boolean hasActiveFinal = course.getEvaluations().stream()
+                .anyMatch(evaluation -> evaluation.isActive() && evaluation.getType() == EvaluationType.FINAL);
+        if (!hasActiveFinal) {
+            createEvaluation(course, course.getFinalEvaluationDate(), EvaluationType.FINAL);
+        }
     }
 
     public void createEvaluation(Course course, LocalDate date, EvaluationType evaluationType) {
@@ -132,12 +141,25 @@ public class EvaluationService {
         questionService.generateQuestions(evaluationType, evaluation);
     }
 
+    public void deleteActiveSemesterEvaluation(Course course) {
+        Optional<Evaluation> activeEvaluation = course
+                .getEvaluations()
+                .stream()
+                .filter(evaluation -> evaluation.isActive() && evaluation.getType() == EvaluationType.FINAL)
+                .findAny();
+        if (activeEvaluation.isPresent() &&
+                activeEvaluation.get().getQuestions().iterator().next().getAnswers().isEmpty()) {
+            evaluationRepository.delete(activeEvaluation.get());
+        }
+    }
+
     public EvaluationResponseDto updateTitle(Long evaluationId, String newTitle) {
         Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow();
         evaluation.setTitle(newTitle);
         evaluationRepository.save(evaluation);
         return evaluationMapper.entityToDto(evaluation);
     }
+
     public void postAnswers(List<PostAnswerRequest> postAnswerRequests, Account account) {
         for (PostAnswerRequest postAnswerRequest : postAnswerRequests) {
             Question question = questionService.getQuestionById(postAnswerRequest.getId());
@@ -156,4 +178,5 @@ public class EvaluationService {
             }
         }
     }
+
 }

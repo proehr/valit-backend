@@ -7,19 +7,26 @@ import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.entity.Semester;
 import com.edu.m7.feedback.model.mapping.CourseDtoMapper;
 import com.edu.m7.feedback.model.mapping.EvaluationDtoMapper;
+import com.edu.m7.feedback.model.repository.CourseRepository;
 import com.edu.m7.feedback.model.repository.DateRepository;
 import com.edu.m7.feedback.model.repository.EvaluationRepository;
 import com.edu.m7.feedback.model.repository.SemesterRepository;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
-import com.edu.m7.feedback.model.repository.CourseRepository;
 import com.edu.m7.feedback.payload.response.EvaluationResponseDto;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,17 +38,19 @@ public class CourseService {
     private final SemesterRepository semesterRepository;
     private final EvaluationRepository evaluationRepository;
     private final DateRepository dateRepository;
+    private EvaluationService evaluationService;
 
     public CourseService(
             CourseRepository courseRepository,
             SemesterRepository semesterRepository,
             EvaluationRepository evaluationRepository,
-            DateRepository dateRepository
-    ) {
+            DateRepository dateRepository,
+            EvaluationService evaluationService) {
         this.courseRepository = courseRepository;
         this.semesterRepository = semesterRepository;
         this.evaluationRepository = evaluationRepository;
         this.dateRepository = dateRepository;
+        this.evaluationService = evaluationService;
     }
 
     public Set<Date> getDatesBetween(
@@ -90,6 +99,34 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
+    public List<CourseResponseDto> getNextThreeCourses(Lecturer lecturer) {
+
+        // get all the courses associated with the Lecturer
+        List<Course> courses = courseRepository.findByLecturer(lecturer);
+
+        // get today's date
+        LocalDate today = LocalDate.now();
+
+        List<Date> courseDates = courses.stream()
+                .sorted(Comparator.comparing(Course::getTimeStart))
+                .flatMap(course -> course.getDates().stream())
+                .filter((Date date) -> date.getLocalDate().equals(today) || date.getLocalDate().isAfter(today))
+                .sorted(Comparator.comparing(Date::getLocalDate))
+                .limit(3)
+                .collect(Collectors.toList());
+
+        List<Course> nextCourses = new ArrayList<>();
+        for (Date courseDate : courseDates) {
+            nextCourses.add(courseDate.getCourse());
+        }
+
+        return nextCourses.stream()
+                .map(mapper::entityToDto)
+                .sorted(Comparator.comparing(CourseResponseDto::getTimeStart))
+                .collect(Collectors.toList());
+    }
+
+
     public CourseResponseDto getCourseById(Long id, Lecturer lecturer) {
         Optional<Course> optionalCourse = courseRepository.findById(id);
 
@@ -120,15 +157,7 @@ public class CourseService {
         course.setLecturer(lecturer);
         course.setSemester(semester);
         courseRepository.save(course);
-        getDatesBetween(
-                semester.getStartDate(),
-                semester.getEndDate(),
-                course.getWeekday(),
-                course.getInterval()
-        ).forEach((Date date) -> {
-            date.setCourse(course);
-            dateRepository.save(date);
-        });
+        setDatesForCourse(semester, course);
         return mapper.entityToDto(courseRepository.save(course));
     }
 
@@ -140,6 +169,11 @@ public class CourseService {
         courseRepository.save(course);
 
         dateRepository.deleteAll(course.getDates());
+        setDatesForCourse(semester, course);
+        return mapper.entityToDto(course);
+    }
+
+    private void setDatesForCourse(Semester semester, Course course) {
         getDatesBetween(
                 semester.getStartDate(),
                 semester.getEndDate(),
@@ -149,8 +183,12 @@ public class CourseService {
             date.setCourse(course);
             dateRepository.save(date);
         });
-
-        return mapper.entityToDto(course);
+        if (course.getFinalEvaluationDate().isEqual(LocalDate.now())
+                || course.getFinalEvaluationDate().isBefore(LocalDate.now())) {
+            evaluationService.createSemesterEvaluationForCourse(course);
+        } else {
+            evaluationService.deleteActiveSemesterEvaluation(course);
+        }
     }
 
     public void deleteCourse(Long id) {
@@ -159,7 +197,7 @@ public class CourseService {
 
     public CourseResponseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id).orElseThrow();
-        course.setDates(getDatesBetween(course.getSemester().getStartDate(),course.getSemester().getEndDate(),course.getWeekday(),course.getInterval()));
+        course.setDates(getDatesBetween(course.getSemester().getStartDate(), course.getSemester().getEndDate(), course.getWeekday(), course.getInterval()));
         return mapper.entityToDto(course);
     }
 
@@ -180,6 +218,29 @@ public class CourseService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    public List<String> getAllDates(Lecturer lecturer) {
+        // get all the courses
+        List<Course> courses = courseRepository.findByLecturer(lecturer);
+
+        List<LocalDate> dates = new ArrayList<>();
+        for (Course c : courses) {
+            // get set<date> of each course
+            Set<Date> currentCourseDates = c.getDates();
+            // get each Date object from the set
+            for (Date d : currentCourseDates) {
+                // get the LocalDate of each date and extract it into our list of dates
+                dates.add(d.getLocalDate());
+            }
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        return dates.stream()
+                .map(date -> date.format(formatter))
+                .collect(Collectors.toList());
+    }
+
+
 
     public List<CourseResponseDto> getPreviousThreeCourses(Lecturer lecturer) {
         // get all the courses associated with the Lecturer

@@ -67,21 +67,22 @@ public class EvaluationCreationScheduler {
     public void generateSemesterEvaluations() {
         List<Course> coursesWithFinalToday = courseRepository.findByFinalEvaluationDate(LocalDate.now());
         for (Course course : coursesWithFinalToday) {
-            boolean hasActiveFinal = course.getEvaluations().stream()
-                    .anyMatch(evaluation -> evaluation.isActive() && evaluation.getType() == EvaluationType.FINAL);
-            if (!hasActiveFinal) {
-                evaluationService.createEvaluation(course, course.getFinalEvaluationDate(), EvaluationType.FINAL);
-            }
+            evaluationService.createSemesterEvaluationForCourse(course);
         }
     }
 
     @Scheduled(fixedRate = 60000)
+    @Transactional
     public void deactivateEvaluations() {
         List<Evaluation> activeEvaluations = evaluationRepository.findByActiveTrue();
         for (Evaluation activeEvaluation : activeEvaluations) {
 
             if (activeEvaluation.getType() == EvaluationType.REGULAR &&
-                    LocalDate.now().isAfter(activeEvaluation.getDate())
+                    activeEvaluation
+                            .getCourse()
+                            .getDates()
+                            .stream()
+                            .noneMatch((Date date) -> date.getLocalDate().isEqual(LocalDate.now()))
             ) {
                 activeEvaluation.setActive(false);
                 activeEvaluation.setShortcode(null);
