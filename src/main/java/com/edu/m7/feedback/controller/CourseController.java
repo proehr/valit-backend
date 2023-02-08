@@ -36,8 +36,6 @@ import java.util.NoSuchElementException;
 @Slf4j
 @CrossOrigin
 public class CourseController {
-    private final CourseRepository courseRepository;
-    private final DateRepository dateRepository;
 
     private final CourseService courseService;
     private final LecturerService lecturerService;
@@ -48,8 +46,6 @@ public class CourseController {
                             CourseRepository courseRepository) {
         this.courseService = courseService;
         this.lecturerService = lecturerService;
-        this.dateRepository = dateRepository;
-        this.courseRepository = courseRepository;
     }
 
     // retrieve all the courses of the currently logged in Lecturer
@@ -195,7 +191,7 @@ public class CourseController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/dates")
-    ResponseEntity<List<String>> getAllDates(Principal principal){
+    ResponseEntity<List<String>> getAllDates(Principal principal) {
         Lecturer lecturer = lecturerService.getLecturer(principal);
         List<String> dates = courseService.getAllDates(lecturer);
 
