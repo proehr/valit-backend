@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -179,7 +180,7 @@ public class CourseService {
             return dto;
         }).collect(Collectors.toList());
     }
-    public List<LocalDate> getAllDates(Lecturer lecturer){
+    public List<String> getAllDates(Lecturer lecturer){
         // get all the courses
         List<Course> courses = courseRepository.findByLecturer(lecturer);
 
@@ -196,7 +197,13 @@ public class CourseService {
 
         if (dates.isEmpty())
             return null;
-        return dates;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY/MM/DD");
+        List<String> formattedDates = dates.stream()
+                .map(date -> date.format(formatter))
+                .collect(Collectors.toList());
+
+        return formattedDates;
     }
 
 

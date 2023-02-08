@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -186,9 +185,9 @@ public class CourseController {
 
     @RolesAllowed({"ROLE_LECTURER", "ROLE_ADMIN"})
     @GetMapping("/dates")
-    ResponseEntity<List<LocalDate>> getAllDates(Principal principal){
+    ResponseEntity<List<String>> getAllDates(Principal principal){
         Lecturer lecturer = lecturerService.getLecturer(principal);
-        List<LocalDate> dates = courseService.getAllDates(lecturer);
+        List<String> dates = courseService.getAllDates(lecturer);
 
         if (dates != null) {
             return new ResponseEntity<>(dates, HttpStatus.OK);
