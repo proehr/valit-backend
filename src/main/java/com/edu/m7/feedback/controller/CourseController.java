@@ -175,6 +175,22 @@ public class CourseController {
         QrCodeResponse qrCodeResponse = new QrCodeResponse(image, shortcode);
         return new ResponseEntity<>(qrCodeResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/prev-courses")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
+    ResponseEntity<List<CourseResponseDto>> getPreviousCourses(Principal principal){
+        //get the current lecturer
+        Lecturer lecturer = lecturerService.getLecturer(principal);
+
+        //get the next three courses
+        List<CourseResponseDto> coursesDto = courseService.getPreviousThreeCourses(lecturer);
+
+        if (coursesDto != null) {
+            return new ResponseEntity<>(coursesDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 }
 
 
