@@ -19,11 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -183,5 +179,34 @@ public class CourseService {
             }
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public List<CourseResponseDto> getPreviousThreeCourses(Lecturer lecturer) {
+        // get all the courses associated with the Lecturer
+        List<Course> courses = courseRepository.findByLecturer(lecturer);
+
+        // get today's date
+        LocalDate today = LocalDate.now();
+
+        // get all the Dates of the upcoming courses
+        List<Date> courseDates = courses.stream()
+                .flatMap(course -> course.getDates().stream()) // get Only the 'Date' object from the course
+                .sorted( (a,b) -> b.getLocalDate().compareTo(a.getLocalDate()) ) // sort the dates in ascending manner
+                .filter( o -> o.getLocalDate().isBefore(today) ) // get only the Dates before today
+                .limit(3) // get the first three
+                .collect(Collectors.toList()); // pack them into a list
+
+        List<Course> prevCourses = new ArrayList<>();
+
+        for (Date courseDate : courseDates) {
+            Course course = courseRepository.findById(courseDate.getCourse().getId()).orElseThrow();
+            prevCourses.add(course);
+        }
+
+        // return courses in desc order
+        return prevCourses.stream()
+                .map(mapper::entityToDto)
+                .sorted( (a,b) -> b.getTimeStart().compareTo(a.getTimeStart()) )
+                .collect(Collectors.toList());
     }
 }
