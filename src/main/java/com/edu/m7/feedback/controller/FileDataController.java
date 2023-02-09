@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/images/")
+@RequestMapping("/api/images/")
 @Slf4j
 @CrossOrigin
 public class FileDataController {
