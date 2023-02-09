@@ -2,11 +2,13 @@ package com.edu.m7.feedback.payload.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class LiveFeedbackMessage {
 
     private Long participant;
