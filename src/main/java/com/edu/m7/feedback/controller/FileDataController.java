@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -77,12 +78,14 @@ public class FileDataController {
     public ResponseEntity<ImageResponse> getProfilePicture(Principal principal) throws IOException {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
-
-        String filePath = fileDataService.getFilePath(lecturer);
-
-        byte[] imageData = fileDataService.downloadFile(filePath);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new ImageResponse(imageData));
+        try {
+            String filePath = fileDataService.getFilePath(lecturer);
+            byte[] imageData = fileDataService.downloadFile(filePath);
+            return ResponseEntity.status(HttpStatus.OK).body(new ImageResponse(imageData));
+        } catch (NoSuchElementException e) {
+            log.info("Requested non-existent picture", e);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     // Delete the User's profile picture
