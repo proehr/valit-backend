@@ -3,15 +3,20 @@ package com.edu.m7.feedback.controller;
 import com.edu.m7.feedback.model.entity.FileData;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.FileDataRepository;
+import com.edu.m7.feedback.payload.response.ImageResponse;
 import com.edu.m7.feedback.payload.response.MessageResponse;
 import com.edu.m7.feedback.service.FileDataService;
 import com.edu.m7.feedback.service.LecturerService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -69,7 +74,7 @@ public class FileDataController {
 
     // Retrieve User's Profile Picture
     @GetMapping
-    public ResponseEntity<byte[]> getProfilePicture(Principal principal) throws IOException {
+    public ResponseEntity<ImageResponse> getProfilePicture(Principal principal) throws IOException {
 
         Lecturer lecturer = lecturerService.getLecturer(principal);
 
@@ -77,9 +82,7 @@ public class FileDataController {
 
         byte[] imageData = fileDataService.downloadFile(filePath);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
+        return ResponseEntity.status(HttpStatus.OK).body(new ImageResponse(imageData));
     }
 
     // Delete the User's profile picture
