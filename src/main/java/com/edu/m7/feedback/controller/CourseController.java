@@ -1,7 +1,6 @@
 package com.edu.m7.feedback.controller;
 
-import com.edu.m7.feedback.model.repository.CourseRepository;
-import com.edu.m7.feedback.model.repository.DateRepository;
+import com.edu.m7.feedback.model.EvaluationType;
 import com.edu.m7.feedback.payload.request.CourseRequestDto;
 import com.edu.m7.feedback.payload.response.CourseResponseDto;
 import com.edu.m7.feedback.model.entity.Lecturer;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -174,8 +174,14 @@ public class CourseController {
         if (!courseService.getLecturerByCourseId(courseId).equals(lecturerId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        EvaluationResponseDto evaluation = courseService.loadEvaluationsByCourseId(courseId).get(0);
-        String shortcode = evaluation.getShortcode();
+        Optional<EvaluationResponseDto> activeEvaluation = courseService.loadEvaluationsByCourseId(courseId).stream()
+                .filter(evaluationResponseDto -> evaluationResponseDto.isActive()
+                        && evaluationResponseDto.getType() == EvaluationType.REGULAR)
+                .findAny();
+        if(activeEvaluation.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String shortcode = activeEvaluation.get().getShortcode();
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array
