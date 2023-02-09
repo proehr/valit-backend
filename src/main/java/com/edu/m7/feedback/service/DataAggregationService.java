@@ -6,6 +6,7 @@ import com.edu.m7.feedback.model.entity.Evaluation;
 import com.edu.m7.feedback.model.entity.IntAnswer;
 import com.edu.m7.feedback.model.entity.Lecturer;
 import com.edu.m7.feedback.model.repository.CourseRepository;
+import com.edu.m7.feedback.payload.response.AttendanceResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,13 +49,13 @@ public class DataAggregationService {
 
     }
 
-    public List<Integer> getAttendance(Long courseId) {
+    public List<AttendanceResponse> getAttendance(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow();
-        List<Integer> attendanceList = new ArrayList<>();
+        List<AttendanceResponse> attendanceList = new ArrayList<>();
         for (Evaluation evaluation : course.getEvaluations()) {
             if (evaluation.getType() == EvaluationType.REGULAR) {
                 Integer size = evaluation.getQuestions().iterator().next().getAnswers().size();
-                attendanceList.add(size);
+                attendanceList.add(new AttendanceResponse(size, evaluation.getDate()));
             }
         }
         Collections.reverse(attendanceList);
