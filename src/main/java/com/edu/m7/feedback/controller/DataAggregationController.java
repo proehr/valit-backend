@@ -1,6 +1,7 @@
 package com.edu.m7.feedback.controller;
 
 import com.edu.m7.feedback.model.entity.Lecturer;
+import com.edu.m7.feedback.payload.response.AttendanceResponse;
 import com.edu.m7.feedback.service.CourseService;
 import com.edu.m7.feedback.service.DataAggregationService;
 import com.edu.m7.feedback.service.LecturerService;
@@ -47,7 +48,7 @@ public class DataAggregationController {
 
     @GetMapping("/{courseId}/attendance")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_LECTURER"})
-    ResponseEntity<List<Integer>> getAttendance(@PathVariable Long courseId, Principal principal) {
+    ResponseEntity<List<AttendanceResponse>> getAttendance(@PathVariable Long courseId, Principal principal) {
         Long lecturerId = lecturerService.getLecturer(principal).getLecturerId();
         Long courseLecturerId = courseService.getLecturerByCourseId(courseId);
         if (!courseLecturerId.equals(lecturerId)) {
