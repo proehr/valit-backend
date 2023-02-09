@@ -22,5 +22,6 @@ public class EvaluationResponseDto {
     private LocalDate date;
     private Set<QuestionDto> questions;
     private int participants;
+    private boolean active;
 
 }
